@@ -1,6 +1,7 @@
 package org.lamisplus.modules.sync.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.springframework.stereotype.Service;
 
@@ -12,6 +13,7 @@ import java.util.Date;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class QueueManager {
 
     private final ObjectDeserializer objectDeserializer;
@@ -25,8 +27,8 @@ public class QueueManager {
         File file = new File(folder.concat(fileName));
 
         FileUtils.writeStringToFile(file, data, Charset.defaultCharset());
-        //Save sync in queue table
-
+        System.out.println("table : "+  table);
+        System.out.println("data : "+  data);
         objectDeserializer.deserialize(data, table);
     }
 
