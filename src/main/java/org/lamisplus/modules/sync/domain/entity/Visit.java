@@ -4,12 +4,17 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.ToString;
+import org.lamisplus.modules.sync.utility.LocalTimeAttributeConverter;
+import org.springframework.data.annotation.CreatedBy;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedBy;
+import org.springframework.data.annotation.LastModifiedDate;
 
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDate;
-import java.time.LocalTime;
-import java.util.List;
+import java.time.LocalDateTime;
 
 @Entity
 @Data
@@ -22,31 +27,30 @@ public class Visit implements Serializable {
     private Long id;
 
     @Basic
-    @Column(name = "uuid", updatable = false)
+    @Column(name = "uuid", updatable = true)
     @JsonIgnore
     private String uuid;
 
     @Basic
     @Column(name = "date_visit_end")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-    private LocalDate dateVisitEnd;
+    private LocalDateTime dateVisitEnd;
 
     @Basic
     @Column(name = "date_visit_start")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-    private LocalDate dateVisitStart;
+    private LocalDateTime dateVisitStart;
 
     @Basic
     @Column(name = "time_visit_start")
-  //  @Convert(converter = LocalTimeAttributeConverter.class)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "hh:mm a")
-    private LocalTime timeVisitStart;
+    private LocalDateTime timeVisitStart;
 
     @Basic
     @Column(name = "time_visit_end", nullable = true)
-  //  @Convert(converter = LocalTimeAttributeConverter.class)
+   @Convert(converter = LocalTimeAttributeConverter.class)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "hh:mm a")
-    private LocalTime timeVisitEnd;
+    private LocalDateTime timeVisitEnd;
 
     @Basic
     @Column(name = "date_next_appointment")
@@ -73,4 +77,29 @@ public class Visit implements Serializable {
     @Basic
     @Column(name = "organisation_unit_id", updatable = false)
     private Long organisationUnitId;
+
+    @CreatedBy
+    @Column(name = "created_by", nullable = false, updatable = false)
+    @JsonIgnore
+    @ToString.Exclude
+    private String createdBy;
+
+    @CreatedDate
+    @Column(name = "date_created", nullable = false, updatable = false)
+    @JsonIgnore
+    @ToString.Exclude
+    private LocalDateTime dateCreated;
+
+    @LastModifiedBy
+    @Column(name = "modified_by")
+    @JsonIgnore
+    @ToString.Exclude
+    private String modifiedBy;
+
+    @LastModifiedDate
+    @Column(name = "date_modified")
+    @JsonIgnore
+    @ToString.Exclude
+    private LocalDateTime dateModified;
+
 }

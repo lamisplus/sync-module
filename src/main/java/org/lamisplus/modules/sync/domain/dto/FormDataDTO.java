@@ -1,10 +1,18 @@
 package org.lamisplus.modules.sync.domain.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
+import javax.persistence.Basic;
+import javax.persistence.Column;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class FormDataDTO {
 
     private String uuid;
@@ -13,13 +21,7 @@ public class FormDataDTO {
 
     private Object data;
 
-    private LocalTime dateCreated;
 
-    private String createdBy;
+    private Long organisationUnitId;
 
-    private LocalTime dateModified;
-
-    private String modifiedBy;
-
-    private int archived;
 }

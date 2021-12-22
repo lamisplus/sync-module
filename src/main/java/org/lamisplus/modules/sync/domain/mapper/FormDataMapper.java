@@ -11,6 +11,8 @@ import org.mapstruct.Mappings;
 public interface FormDataMapper {
     @Mappings({
             @Mapping(source="encounter.uuid", target="encounterUuid"),
+            @Mapping(source="formData.uuid", target="uuid"),
+            @Mapping(source="formData.organisationUnitId", target="organisationUnitId")
     })
     FormDataDTO toFormDataDTO(FormData formData, Encounter encounter);
 

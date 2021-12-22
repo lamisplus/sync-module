@@ -1,27 +1,46 @@
 package org.lamisplus.modules.sync.domain.dto;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
+import java.time.LocalDateTime;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class VisitDTO {
-
-    Long id;
     private String uuid;
 
     private String patientUuid;
 
+    private Long organisationUnitId;
+
     //private String organisationUnitUuid;
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+    private LocalDateTime dateVisitStart;
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+    private LocalDateTime dateVisitEnd;
 
-    private LocalDate dateVisitStart;
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+    private LocalDateTime timeVisitStart;
 
-    private LocalDate dateVisitEnd;
-
-    private LocalTime timeVisitStart;
-
-    private LocalTime timeVisitEnd;
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+    private LocalDateTime timeVisitEnd;
 
     private Long visitTypeId;
 
@@ -29,11 +48,16 @@ public class VisitDTO {
 
     private LocalDate dateNextAppointment;
 
-    private LocalTime dateCreated;
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+    private LocalDateTime dateCreated;
 
     private String createdBy;
-
-    private LocalTime dateModified;
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+    private LocalDateTime dateModified;
 
     private String modifiedBy;
 

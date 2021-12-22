@@ -1,5 +1,6 @@
 package org.lamisplus.modules.sync.domain.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -14,12 +15,11 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
-
-@Data
 @Entity
+@Data
 @EqualsAndHashCode
-@Table(name = "patient")
-public class Patient extends JsonBEntity implements Serializable {
+@Table(name = "appointment")
+public class Appointment implements Serializable {
 
     @Id
     @Column(name = "id", updatable = false)
@@ -27,30 +27,36 @@ public class Patient extends JsonBEntity implements Serializable {
     private Long id;
 
     @Basic
-    @Column(name = "uuid", updatable = true)
+    @Column(name = "uuid", updatable = false)
     @JsonIgnore
     private String uuid;
 
+    @Column(name = "patient_id")
+    private Long patientId;
+
     @Basic
-    @Column(name = "patient_number")
-    private String patientNumber;
+    @Column(name = "visit_id")
+    private Long visitId;
 
     @Basic
     @Column(name = "organisation_unit_id", updatable = false)
-    @JsonIgnore
     private Long organisationUnitId;
+
+    @Basic
+    @Column(name = "date")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd@HH:mm:ss")
+    private LocalDateTime date;
 
     @Type(type = "jsonb")
     @Basic(fetch = FetchType.LAZY)
-    @Column(name = "details", nullable = false, columnDefinition = "jsonb")
-    private Object details;
+    @Column(name = "detail", nullable = false, columnDefinition = "jsonb")
+    private Object detail;
 
     @CreatedBy
     @Column(name = "created_by", nullable = false, updatable = false)
     @JsonIgnore
     @ToString.Exclude
     private String createdBy;
-
 
     @CreatedDate
     @Column(name = "date_created", nullable = false, updatable = false)

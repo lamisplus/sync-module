@@ -4,6 +4,7 @@ import okhttp3.*;
 
 import java.io.IOException;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 public class HttpConnectionManager {
     private final OkHttpClient httpClient = new OkHttpClient();
@@ -24,18 +25,8 @@ public class HttpConnectionManager {
 
     }
 
-    public String post(String json, String url) throws IOException {
-/*
-        // form parameters
-        RequestBody formBody = new FormBody.Builder()
-                .add("username", "abc")
-                .add("password", "123")
-                .add("custom", "secret")
-                .build();
-*/
-
-        // json request body
-        RequestBody body = RequestBody.create(json, MediaType.parse("application/json; charset=utf-8"));
+    public String post(byte[] data, String url) throws IOException {
+        RequestBody body = RequestBody.create(data, MediaType.parse("application/json; charset=utf-8"));
 
         Request request = new Request.Builder()
                 .url(url)
@@ -43,11 +34,16 @@ public class HttpConnectionManager {
                 .post(body)
                 .build();
 
-        try (Response response = httpClient.newCall(request).execute()) {
+        try (Response response = httpClient
+                .newBuilder()
+                .connectTimeout(30, TimeUnit.MINUTES)
+                .readTimeout(30, TimeUnit.MINUTES)
+                .writeTimeout(30, TimeUnit.MINUTES)
+                .build()
+                .newCall(request).execute()
+        ) {
             if (!response.isSuccessful()) throw new IOException("Unexpected code " + response);
-
-            // Get response body
-            return Objects.requireNonNull(response.body()).string();
+           return Objects.requireNonNull(response.body()).string();
         }
 
     }
