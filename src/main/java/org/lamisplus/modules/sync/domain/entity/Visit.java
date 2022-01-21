@@ -15,7 +15,6 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 
 @Entity
 @Data
@@ -35,24 +34,23 @@ public class Visit implements Serializable {
     @Basic
     @Column(name = "date_visit_end")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-    private LocalDate dateVisitEnd;
+    private LocalDateTime dateVisitEnd;
 
     @Basic
     @Column(name = "date_visit_start")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-    private LocalDate dateVisitStart;
+    private LocalDateTime dateVisitStart;
 
     @Basic
     @Column(name = "time_visit_start")
-   @Convert(converter = LocalTimeAttributeConverter.class)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "hh:mm a")
-    private LocalTime timeVisitStart;
+    private LocalDateTime timeVisitStart;
 
     @Basic
     @Column(name = "time_visit_end", nullable = true)
    @Convert(converter = LocalTimeAttributeConverter.class)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "hh:mm a")
-    private LocalTime timeVisitEnd;
+    private LocalDateTime timeVisitEnd;
 
     @Basic
     @Column(name = "date_next_appointment")
