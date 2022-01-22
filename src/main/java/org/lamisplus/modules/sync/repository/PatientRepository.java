@@ -16,4 +16,7 @@ public interface PatientRepository extends JpaRepository <Patient, Long> {
 
     @Query(value = "SELECT * FROM patient WHERE uuid is NULL", nativeQuery = true)
     List<Patient> findNullUuid();
+
+    @Query(value = "SELECT * FROM patient WHERE id is ?1", nativeQuery = true)
+    Patient getById(Long patientId);
 }

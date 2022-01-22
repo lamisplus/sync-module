@@ -12,6 +12,7 @@ import org.lamisplus.modules.sync.service.SyncHistoryService;
 import org.lamisplus.modules.sync.utility.HttpConnectionManager;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.configurationprocessor.json.JSONException;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -27,14 +28,15 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/sync")
+@ConfigurationProperties(prefix = "lamis", ignoreInvalidFields = true)
 public class ClientController {
 
     private final SyncHistoryService syncHistoryService;
     private final ObjectSerializer objectSerializer;
     private final ObjectMapper mapper = new ObjectMapper();
 
-    @Value("${lamis.api.sync}")
-    private String serverUrl;
+    //@Value("${lamis.api.sync}")
+    private String serverUrl = "http://137.135.105.145:8081/api/sync/";
 
     @GetMapping("/{facilityId}")
     public ResponseEntity<String> sender(@PathVariable("facilityId") Long facilityId) throws Exception  {

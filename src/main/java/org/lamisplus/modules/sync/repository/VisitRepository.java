@@ -15,4 +15,7 @@ public interface VisitRepository extends JpaRepository<Visit, Long> {
 
     @Query(value = "SELECT * FROM visit WHERE uuid is NULL", nativeQuery = true)
     List<Visit> findNullUuid();
+
+    @Query(value = "SELECT * FROM visit WHERE id is ?1", nativeQuery = true)
+    Visit getById(Long visitId);
 }

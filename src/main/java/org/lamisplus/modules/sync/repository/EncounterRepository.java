@@ -15,4 +15,7 @@ public interface EncounterRepository extends JpaRepository<Encounter, Long> {
 
     @Query(value = "SELECT * FROM encounter WHERE uuid is NULL", nativeQuery = true)
     List<Encounter> findNullUuid();
+
+    @Query(value = "SELECT * FROM encounter WHERE id is ?1", nativeQuery = true)
+    Encounter getById(Long encounterId);
 }
