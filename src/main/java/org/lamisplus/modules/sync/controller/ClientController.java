@@ -3,27 +3,25 @@ package org.lamisplus.modules.sync.controller;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import com.google.common.hash.Hashing;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import io.github.resilience4j.retry.annotation.Retry;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.lamisplus.modules.sync.domain.dto.RemoteUrlDTO;
 import org.lamisplus.modules.sync.domain.entity.OrganisationUnit;
+import org.lamisplus.modules.sync.domain.entity.RemoteAccessToken;
 import org.lamisplus.modules.sync.domain.entity.SyncHistory;
 import org.lamisplus.modules.sync.domain.entity.Tables;
 import org.lamisplus.modules.sync.repository.OrganisationUnitRepository;
 import org.lamisplus.modules.sync.service.ObjectSerializer;
+import org.lamisplus.modules.sync.service.RemoteAccessTokenService;
 import org.lamisplus.modules.sync.service.SyncHistoryService;
 import org.lamisplus.modules.sync.utility.HttpConnectionManager;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.hateoas.mediatype.hal.forms.HalFormsOptions;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.DigestUtils;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
@@ -38,14 +36,16 @@ public class ClientController {
     private final ObjectMapper mapper = new ObjectMapper();
     private final SyncHistoryService syncHistoryService;
     private final OrganisationUnitRepository organisationUnitRepository;
+    private final RemoteAccessTokenService remoteAccessTokenService;
 
-    @Value("${server.url}")
+    @Value("${remote.lamis.url}")
     private String SERVER_URL;
 
     @GetMapping("/{facilityId}")
     @CircuitBreaker(name = "service2", fallbackMethod = "getDefaultMessage")
     @Retry(name = "retryService2", fallbackMethod = "retryFallback")
     public ResponseEntity<String> sender(@PathVariable("facilityId") Long facilityId) throws Exception {
+        System.out.println("path: "+ SERVER_URL);
         mapper.enable(SerializationFeature.INDENT_OUTPUT);
         mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
         System.out.println("table values: => " + Arrays.toString(Tables.values()));
@@ -96,7 +96,24 @@ public class ClientController {
     }
 
     @GetMapping("/facilities")
-    public ResponseEntity<List<OrganisationUnit>> getAllOrganizationUnit() {
+    public ResponseEntity<List<OrganisationUnit>> getOrganisationUnitWithRecords() {
         return ResponseEntity.ok(organisationUnitRepository.findOrganisationUnitWithRecords());
     }
+
+    @GetMapping("/sync-history")
+    public ResponseEntity<List<SyncHistory>> getSyncHistory() {
+        return ResponseEntity.ok(syncHistoryService.getSyncHistories());
+    }
+
+    @PostMapping("/remote-access-token")
+    public ResponseEntity<String> remoteAccessToken( @RequestBody RemoteAccessToken remoteAccessToken) {
+        remoteAccessTokenService.save(remoteAccessToken);
+        return ResponseEntity.ok("Successful");
+    }
+
+    @GetMapping("/remote-urls")
+    public ResponseEntity<List<RemoteUrlDTO>> getRemoteUrls() {
+        return ResponseEntity.ok(remoteAccessTokenService.getRemoteUrls());
+    }
+
 }

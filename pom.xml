@@ -10,8 +10,8 @@
 	</parent>
 
 	<groupId>org.lamisplus.modules</groupId>
-	<artifactId>sync</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<artifactId>sync-module</artifactId>
+	<version>1.0</version>
 	<packaging>jar</packaging>
 	<description>Sync Module</description>
 	<properties>
@@ -141,10 +141,6 @@
 			<artifactId>resilience4j-spring-boot2</artifactId>
 			<version>1.7.1</version>
 		</dependency>
-
-
-
-
 
 
 		<!--<dependency>
