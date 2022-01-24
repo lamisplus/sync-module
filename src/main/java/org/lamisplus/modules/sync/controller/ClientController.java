@@ -19,6 +19,7 @@ import org.lamisplus.modules.sync.service.SyncHistoryService;
 import org.lamisplus.modules.sync.utility.HttpConnectionManager;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.hateoas.mediatype.hal.forms.HalFormsOptions;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -95,12 +96,14 @@ public class ClientController {
         return ResponseEntity.internalServerError().body(message);
     }
 
-    @GetMapping("/facilities")
-    public ResponseEntity<List<OrganisationUnit>> getOrganisationUnitWithRecords() {
-        return ResponseEntity.ok(organisationUnitRepository.findOrganisationUnitWithRecords());
-    }
+     //@GetMapping("/facilities")
+     @RequestMapping(value = "/facilities", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+     public ResponseEntity<List<OrganisationUnit>> getOrganisationUnitWithRecords() {
+         return ResponseEntity.ok(organisationUnitRepository.findOrganisationUnitWithRecords());
+     }
 
-    @GetMapping("/sync-history")
+    //@GetMapping("/sync-history")
+    @RequestMapping(value = "/sync-history", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<SyncHistory>> getSyncHistory() {
         return ResponseEntity.ok(syncHistoryService.getSyncHistories());
     }
@@ -111,7 +114,8 @@ public class ClientController {
         return ResponseEntity.ok("Successful");
     }
 
-    @GetMapping("/remote-urls")
+    //@GetMapping("/remote-urls")
+    @RequestMapping(value = "/remote-urls", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<RemoteUrlDTO>> getRemoteUrls() {
         return ResponseEntity.ok(remoteAccessTokenService.getRemoteUrls());
     }
