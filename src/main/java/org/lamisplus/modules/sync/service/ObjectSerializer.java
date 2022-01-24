@@ -59,7 +59,7 @@ public class ObjectSerializer {
             return visitList.stream()
                     .filter(visit -> visit.getOrganisationUnitId().equals(facilityId))
                     .map(visit -> {
-                        Patient patient = patientRepository.getById(visit.getPatientId());
+                        Patient patient = patientRepository.findById(visit.getPatientId()).get();
                         return visitMapper.toVisitDTO(visit, patient);
                     }).collect(Collectors.toList());
 
@@ -76,8 +76,8 @@ public class ObjectSerializer {
             return encounterList.stream()
                     .filter(encounter -> encounter.getOrganisationUnitId().equals(facilityId))
                     .map(encounter -> {
-                        Patient patient = patientRepository.getById(encounter.getPatientId());
-                        Visit visit = visitRepository.getById(encounter.getVisitId());
+                        Patient patient = patientRepository.findById(encounter.getPatientId()).get();
+                        Visit visit = visitRepository.findById(encounter.getVisitId()).get();
                         return encounterMapper.toEncounterDTO(encounter, patient, visit);
                     }).collect(Collectors.toList());
         }
@@ -92,7 +92,7 @@ public class ObjectSerializer {
             return formDataList.stream()
                     .filter(formData -> formData.getOrganisationUnitId().equals(facilityId))
                     .map(formData -> {
-                        Encounter encounter = encounterRepository.getById(formData.getEncounterId());
+                        Encounter encounter = encounterRepository.findById(formData.getEncounterId()).get();
                         return formDataMapper.toFormDataDTO(formData, encounter);
                     }).collect(Collectors.toList());
 
@@ -109,8 +109,8 @@ public class ObjectSerializer {
             return appointmentList.stream()
                     .filter(appointment -> appointment.getOrganisationUnitId().equals(facilityId))
                     .map(appointment -> {
-                        Patient patient = patientRepository.getById(appointment.getPatientId());
-                        Visit visit = visitRepository.getById(appointment.getVisitId());
+                        Patient patient = patientRepository.findById(appointment.getPatientId()).get();
+                        Visit visit = visitRepository.findById(appointment.getVisitId()).get();
                         return appointmentMapper.toAppointmentDTO(appointment, patient, visit);
                     }).collect(Collectors.toList());
 
