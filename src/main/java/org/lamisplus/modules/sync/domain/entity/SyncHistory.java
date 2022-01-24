@@ -1,7 +1,6 @@
 package org.lamisplus.modules.sync.domain.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -32,5 +31,9 @@ public class SyncHistory implements Serializable {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDateTime dateLastSync;
 
+    @Transient
+    private String facilityName;
 
+    @Transient
+    private String status;
 }
