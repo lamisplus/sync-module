@@ -28,7 +28,6 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/sync")
-@ConfigurationProperties(prefix = "lamis", ignoreInvalidFields = true)
 public class ClientController {
 
     private final SyncHistoryService syncHistoryService;
