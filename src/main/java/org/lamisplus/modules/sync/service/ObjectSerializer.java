@@ -27,8 +27,6 @@ public class ObjectSerializer {
     private final FormDataMapper formDataMapper;
     private final VisitMapper visitMapper;
     private final AppointmentMapper appointmentMapper;
-    private final ClientRepository clientRepository;
-    private final UuidService uuidService;
 
     public List<?> serialize(Tables table, long facilityId, LocalDateTime dateLastSync) {
 
