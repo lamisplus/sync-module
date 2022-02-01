@@ -50,7 +50,7 @@ server:
 spring:
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5432/lamisplus
+    url: jdbc:postgresql://localhost:5432/nomis_amos_db
     password: emeka
     username: postgres
 

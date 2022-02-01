@@ -170,52 +170,6 @@
 			<groupId>org.lamisplus.modules</groupId>
 			<artifactId>base-module</artifactId>
 			<version>1.1.0</version>
-			<!--<exclusions>
-				<exclusion>
-					<groupId>com.foreach.across</groupId>
-					<artifactId>across-test</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>com.foreach.across</groupId>
-					<artifactId>across-autoconfigure</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.postgresql</groupId>
-					<artifactId>postgresql</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.hibernate</groupId>
-					<artifactId>hibernate-core</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.mapstruct</groupId>
-					<artifactId>mapstruct</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.springframework.boot</groupId>
-					<artifactId>spring-boot-starter</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.springframework.boot</groupId>
-					<artifactId>spring-boot-starter-web</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>com.vladmihalcea</groupId>
-					<artifactId>hibernate-types-52</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>com.fasterxml.jackson.datatype</groupId>
-					<artifactId>jackson-datatype-jsr310</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>commons-io</groupId>
-					<artifactId>commons-io</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>com.squareup.okhttp3</groupId>
-					<artifactId>okhttp</artifactId>
-				</exclusion>
-			</exclusions>-->
 		</dependency>
 	</dependencies>
 
