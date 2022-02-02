@@ -16,7 +16,6 @@ public class CorsConfig {
     public FilterRegistrationBean corsFilter() {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration configAutenticacao = new CorsConfiguration();
-        configAutenticacao.setAllowCredentials(true);
         configAutenticacao.addAllowedOrigin(allowOrigin);
         configAutenticacao.addAllowedHeader("Authorization");
         configAutenticacao.addAllowedHeader("Content-Type");
