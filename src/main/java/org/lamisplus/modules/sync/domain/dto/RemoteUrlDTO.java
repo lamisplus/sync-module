@@ -6,4 +6,6 @@ import lombok.Data;
 public class RemoteUrlDTO {
     private Long id;
     private String url;
+    private String username;
+
 }

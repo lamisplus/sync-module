@@ -26,6 +26,7 @@ public class RemoteAccessTokenService {
             RemoteUrlDTO remoteUrlDTO = new RemoteUrlDTO();
             remoteUrlDTO.setId(remoteAccessToken.getId());
             remoteUrlDTO.setUrl(remoteAccessToken.getUrl());
+            remoteUrlDTO.setUsername(remoteAccessToken.getUsername());
             remoteUrlDTOS.add(remoteUrlDTO);
         });
         return remoteUrlDTOS;

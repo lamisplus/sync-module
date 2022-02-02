@@ -8,6 +8,7 @@ import io.github.resilience4j.retry.annotation.Retry;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.lamisplus.modules.sync.domain.dto.RemoteUrlDTO;
+import org.lamisplus.modules.sync.domain.dto.UploadDto;
 import org.lamisplus.modules.sync.domain.entity.OrganisationUnit;
 import org.lamisplus.modules.sync.domain.entity.RemoteAccessToken;
 import org.lamisplus.modules.sync.domain.entity.SyncHistory;
@@ -41,31 +42,30 @@ public class ClientController {
 
     // @Value("${remote.lamis.url}")
     // private String SERVER_URL;
-    @RequestMapping(value = "/{facilityId}",
-            method = RequestMethod.GET,
+    @RequestMapping(value = "/upload",
+            method = RequestMethod.POST,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @CircuitBreaker(name = "service2", fallbackMethod = "getDefaultMessage")
     @Retry(name = "retryService2", fallbackMethod = "retryFallback")
-    public ResponseEntity<String> sender(@PathVariable("facilityId") Long facilityId,
-                                         @RequestParam("serverUrl") String serverUrl) throws Exception {
-        System.out.println("path: " + serverUrl);
+    public ResponseEntity<String> sender(@RequestBody UploadDto uploadDto) throws Exception {
+        System.out.println("path: " + uploadDto.getServerUrl());
         mapper.enable(SerializationFeature.INDENT_OUTPUT);
         mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
         System.out.println("table values: => " + Arrays.toString(Tables.values()));
         for (Tables table : Tables.values()) {
-            SyncHistory syncHistory = syncHistoryService.getSyncHistory(table.name(), facilityId);
+            SyncHistory syncHistory = syncHistoryService.getSyncHistory(table.name(), uploadDto.getFacilityId());
             LocalDateTime dateLastSync = syncHistory.getDateLastSync();
             log.info("last date sync 1 {}", dateLastSync);
-            List<?> serializeTableRecords = objectSerializer.serialize(table, facilityId, dateLastSync);
+            List<?> serializeTableRecords = objectSerializer.serialize(table, uploadDto.getFacilityId(), dateLastSync);
             if (!serializeTableRecords.isEmpty()) {
                 Object serializeObjet = serializeTableRecords.get(0);
 
 //              log.info("serialize first  object  {} ", serializeObjet.toString());
                 log.info("object size:  {} ", serializeTableRecords.size());
                 if (!serializeObjet.toString().contains("No table records was retrieved for server sync")) {
-                    String pathVariable = table.name().concat("/").concat(Long.toString(facilityId));
+                    String pathVariable = table.name().concat("/").concat(Long.toString(uploadDto.getFacilityId()));
                     System.out.println("path: " + pathVariable);
-                    String url = serverUrl.concat("/api/sync/").concat(pathVariable);
+                    String url = uploadDto.getServerUrl().concat("/api/sync/").concat(pathVariable);
 
                     log.info("url : {}", url);
 
@@ -75,7 +75,7 @@ public class ClientController {
                     System.out.println("==>: " + response);
                     log.info("Done : {}", response);
                     syncHistory.setTableName(table.name());
-                    syncHistory.setOrganisationUnitId(facilityId);
+                    syncHistory.setOrganisationUnitId(uploadDto.getFacilityId());
                     syncHistory.setDateLastSync(LocalDateTime.now());
                     syncHistoryService.save(syncHistory);
                 }
@@ -101,25 +101,33 @@ public class ClientController {
     }
 
     //@GetMapping("/facilities")
-    @RequestMapping(value = "/facilities", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/facilities",
+            method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<OrganisationUnit>> getOrganisationUnitWithRecords() {
         return ResponseEntity.ok(organisationUnitRepository.findOrganisationUnitWithRecords());
     }
 
     //@GetMapping("/sync-history")
-    @RequestMapping(value = "/sync-history", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/sync-history",
+            method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<SyncHistory>> getSyncHistory() {
         return ResponseEntity.ok(syncHistoryService.getSyncHistories());
     }
 
-    @PostMapping("/remote-access-token")
+    @RequestMapping(value = "/remote-access-token",
+            method = RequestMethod.POST,
+            produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> remoteAccessToken(@RequestBody RemoteAccessToken remoteAccessToken) {
         remoteAccessTokenService.save(remoteAccessToken);
         return ResponseEntity.ok("Successful");
     }
 
     //@GetMapping("/remote-urls")
-    @RequestMapping(value = "/remote-urls", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/remote-urls",
+            method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<RemoteUrlDTO>> getRemoteUrls() {
         return ResponseEntity.ok(remoteAccessTokenService.getRemoteUrls());
     }
