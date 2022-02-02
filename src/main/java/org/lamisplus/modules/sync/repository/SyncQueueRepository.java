@@ -16,4 +16,6 @@ public interface SyncQueueRepository extends JpaRepository<SyncQueue, Long> {
 
     @Query(value = "select * from sync_queue sq where sq.organisation_unit_id =: facilityId and sq.processed = 0 order by sq.date_created desc", nativeQuery = true)
     List<SyncQueue> getAllSyncQueueByFacilityNotProcessed(@Param("facilityId") Long facilityId);
+
+    List<SyncQueue> getAllByProcessed(Integer processed);
 }

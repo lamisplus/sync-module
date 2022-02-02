@@ -39,14 +39,16 @@ public class ClientController {
     private final OrganisationUnitRepository organisationUnitRepository;
     private final RemoteAccessTokenService remoteAccessTokenService;
 
-    @Value("${remote.lamis.url}")
-    private String SERVER_URL;
-
-    @GetMapping("/{facilityId}")
+    // @Value("${remote.lamis.url}")
+    // private String SERVER_URL;
+    @RequestMapping(value = "/{facilityId}",
+            method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_VALUE)
     @CircuitBreaker(name = "service2", fallbackMethod = "getDefaultMessage")
     @Retry(name = "retryService2", fallbackMethod = "retryFallback")
-    public ResponseEntity<String> sender(@PathVariable("facilityId") Long facilityId) throws Exception {
-        System.out.println("path: "+ SERVER_URL);
+    public ResponseEntity<String> sender(@PathVariable("facilityId") Long facilityId,
+                                         @RequestParam("serverUrl") String serverUrl) throws Exception {
+        System.out.println("path: " + serverUrl);
         mapper.enable(SerializationFeature.INDENT_OUTPUT);
         mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
         System.out.println("table values: => " + Arrays.toString(Tables.values()));
@@ -62,13 +64,15 @@ public class ClientController {
                 log.info("object size:  {} ", serializeTableRecords.size());
                 if (!serializeObjet.toString().contains("No table records was retrieved for server sync")) {
                     String pathVariable = table.name().concat("/").concat(Long.toString(facilityId));
-                    System.out.println("path: "+ pathVariable);
-                    String url = SERVER_URL.concat(pathVariable);
+                    System.out.println("path: " + pathVariable);
+                    String url = serverUrl.concat("/api/sync/").concat(pathVariable);
+
+                    log.info("url : {}", url);
 
                     byte[] bytes = mapper.writeValueAsBytes(serializeTableRecords);
 //                  System.out.println("output: "+bytes);
                     String response = new HttpConnectionManager().post(bytes, url);
-                    System.out.println("==>: "+ response);
+                    System.out.println("==>: " + response);
                     log.info("Done : {}", response);
                     syncHistory.setTableName(table.name());
                     syncHistory.setOrganisationUnitId(facilityId);
@@ -96,11 +100,11 @@ public class ClientController {
         return ResponseEntity.internalServerError().body(message);
     }
 
-     //@GetMapping("/facilities")
-     @RequestMapping(value = "/facilities", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-     public ResponseEntity<List<OrganisationUnit>> getOrganisationUnitWithRecords() {
-         return ResponseEntity.ok(organisationUnitRepository.findOrganisationUnitWithRecords());
-     }
+    //@GetMapping("/facilities")
+    @RequestMapping(value = "/facilities", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<OrganisationUnit>> getOrganisationUnitWithRecords() {
+        return ResponseEntity.ok(organisationUnitRepository.findOrganisationUnitWithRecords());
+    }
 
     //@GetMapping("/sync-history")
     @RequestMapping(value = "/sync-history", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -109,7 +113,7 @@ public class ClientController {
     }
 
     @PostMapping("/remote-access-token")
-    public ResponseEntity<String> remoteAccessToken( @RequestBody RemoteAccessToken remoteAccessToken) {
+    public ResponseEntity<String> remoteAccessToken(@RequestBody RemoteAccessToken remoteAccessToken) {
         remoteAccessTokenService.save(remoteAccessToken);
         return ResponseEntity.ok("Successful");
     }
