@@ -17,7 +17,8 @@ public class CorsConfig {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration configAutenticacao = new CorsConfiguration();
         configAutenticacao.setAllowCredentials(true);
-        configAutenticacao.addAllowedOrigin(allowOrigin);
+        configAutenticacao.addAllowedOrigin("http://*");
+        configAutenticacao.addAllowedOriginPattern("https://*");
         configAutenticacao.addAllowedHeader("Authorization");
         configAutenticacao.addAllowedHeader("Content-Type");
         configAutenticacao.addAllowedHeader("Accept");

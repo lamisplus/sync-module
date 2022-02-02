@@ -50,8 +50,8 @@ server:
 spring:
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5432/nomis_amos_db
-    password: emeka
+    url: jdbc:postgresql://localhost:5432/lamiplus
+    password: admin
     username: postgres
 
   jpa:
@@ -64,4 +64,4 @@ spring:
       hibernate.enable_lazy_load_no_trans: true
 
 remote:
-  lamis.url: http://137.135.105.145:8081/api/sync/
+  lamis.url: http://localhost:8081/api/sync/
