@@ -3,8 +3,10 @@ package org.lamisplus.modules.sync.service;
 import lombok.RequiredArgsConstructor;
 import org.lamisplus.modules.sync.domain.entity.OrganisationUnit;
 import org.lamisplus.modules.sync.domain.entity.SyncHistory;
+import org.lamisplus.modules.sync.domain.entity.SyncQueue;
 import org.lamisplus.modules.sync.repository.OrganisationUnitRepository;
 import org.lamisplus.modules.sync.repository.SyncHistoryRepository;
+import org.lamisplus.modules.sync.utility.HttpConnectionManager;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -40,4 +42,12 @@ public class SyncHistoryService {
         });
         return syncHistoryList1;
     }
+
+    //This will be a cron job
+    public List<SyncHistory> getSyncHistoriesForClient() {
+        return syncHistoryRepository.findSyncHistoriesByProcessed(0);
+        //Knowing the url to call in the cron job
+    }
+
+
 }

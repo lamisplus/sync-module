@@ -1,6 +1,7 @@
 package org.lamisplus.modules.sync.controller;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
@@ -9,10 +10,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.lamisplus.modules.sync.domain.dto.RemoteUrlDTO;
 import org.lamisplus.modules.sync.domain.dto.UploadDto;
-import org.lamisplus.modules.sync.domain.entity.OrganisationUnit;
-import org.lamisplus.modules.sync.domain.entity.RemoteAccessToken;
-import org.lamisplus.modules.sync.domain.entity.SyncHistory;
-import org.lamisplus.modules.sync.domain.entity.Tables;
+import org.lamisplus.modules.sync.domain.entity.*;
 import org.lamisplus.modules.sync.repository.OrganisationUnitRepository;
 import org.lamisplus.modules.sync.service.ObjectSerializer;
 import org.lamisplus.modules.sync.service.RemoteAccessTokenService;
@@ -71,12 +69,22 @@ public class ClientController {
 
                     byte[] bytes = mapper.writeValueAsBytes(serializeTableRecords);
 //                  System.out.println("output: "+bytes);
+                    //TODO: validate...
                     String response = new HttpConnectionManager().post(bytes, url);
-                    System.out.println("==>: " + response);
+
+                    ObjectMapper mapper = new ObjectMapper();
+                    JsonNode actualObj = mapper.readTree(response);
+                    int processed = actualObj.get("processed").asInt();
+                    Long syncQueueId = actualObj.get("syncQueueId").asLong();
+
                     log.info("Done : {}", response);
+
                     syncHistory.setTableName(table.name());
                     syncHistory.setOrganisationUnitId(uploadDto.getFacilityId());
                     syncHistory.setDateLastSync(LocalDateTime.now());
+                    syncHistory.setProcessed(processed);
+                    //id for later reference to the status of sync
+                    syncHistory.setSyncQueueId(syncQueueId);
                     syncHistoryService.save(syncHistory);
                 }
             }

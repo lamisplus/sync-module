@@ -1,8 +1,10 @@
 package org.lamisplus.modules.sync.domain.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -31,9 +33,27 @@ public class SyncHistory implements Serializable {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDateTime dateLastSync;
 
+    @Basic
+    @Column(name = "processed")
+    private Integer processed;
+
+    @Basic
+    @Column(name = "sync_queue_id")
+    private Long syncQueueId;
+
+    @Basic
+    @Column(name = "remote_access_token_id")
+    private Long remoteAccessTokenId;
+
     @Transient
     private String facilityName;
 
     @Transient
     private String status;
+
+    @ManyToOne
+    @JoinColumn(name = "remote_access_token_id", referencedColumnName = "id", insertable = false, updatable = false)
+    @JsonIgnore
+    @ToString.Exclude
+    private RemoteAccessToken remoteAccessTokenById;
 }

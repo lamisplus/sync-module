@@ -1,10 +1,13 @@
 package org.lamisplus.modules.sync.domain.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.List;
 
 @Data
 @Entity
@@ -31,5 +34,10 @@ public class RemoteAccessToken  implements Serializable {
     @Basic
     @Column(name = "token")
     private String token;
+
+    @OneToMany(mappedBy = "remoteAccessTokenById")
+    @JsonIgnore
+    @ToString.Exclude
+    private List<SyncHistory> syncHistoriesByRemoteAccessTokenId;
 
 }
