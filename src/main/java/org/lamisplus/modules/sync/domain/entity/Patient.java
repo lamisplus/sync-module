@@ -32,8 +32,8 @@ public class Patient extends JsonBEntity implements Serializable {
     private String uuid;
 
     @Basic
-    @Column(name = "patient_number_type")
-    private String patientNumberType;
+    @Column(name = "patient_number")
+    private String hospitalNumber;
 
     @Basic
     @Column(name = "organisation_unit_id", updatable = false)
@@ -73,5 +73,9 @@ public class Patient extends JsonBEntity implements Serializable {
     @Basic
     @Column(name = "archived")
     private Integer archived;
+
+    @Basic
+    @Column(name = "patient_number_type")
+    private String patientNumberType;
 
 }

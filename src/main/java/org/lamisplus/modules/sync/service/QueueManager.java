@@ -132,7 +132,7 @@ public class QueueManager {
     }
 
 
-    @Scheduled(fixedDelay = 30000)
+    @Scheduled(cron = "0/90 * * * * ?") //TODO: what interval is this cron job
     public void process() throws Exception {
         List<SyncQueue> filesNotProcessed = syncQueueRepository.getAllSyncQueueByFacilitiesNotProcessed();
         log.info("available file for processing are : {}", filesNotProcessed.size());

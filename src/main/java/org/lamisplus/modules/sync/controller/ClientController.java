@@ -18,8 +18,7 @@ import org.lamisplus.modules.sync.service.ObjectSerializer;
 import org.lamisplus.modules.sync.service.RemoteAccessTokenService;
 import org.lamisplus.modules.sync.service.SyncHistoryService;
 import org.lamisplus.modules.sync.utility.HttpConnectionManager;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.hateoas.mediatype.hal.forms.HalFormsOptions;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -89,7 +88,7 @@ public class ClientController {
         if (message.contains("Failed to connect")) {
             message = "server is down kindly try again later";
         }
-        return ResponseEntity.internalServerError().body(message);
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(message);
     }
 
     public ResponseEntity<String> retryFallback(Exception exception) {
@@ -97,7 +96,7 @@ public class ClientController {
         if (message.contains("Failed to connect")) {
             message = "server is down kindly try again later inside retry!!!";
         }
-        return ResponseEntity.internalServerError().body(message);
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(message);
     }
 
     //@GetMapping("/facilities")
