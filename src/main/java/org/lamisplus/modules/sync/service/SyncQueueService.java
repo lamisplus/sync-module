@@ -11,6 +11,7 @@ import java.io.File;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -45,4 +46,8 @@ public class SyncQueueService {
         return syncQueue;
     }
 
+    public SyncQueue getAllSyncQueueById(Long id) {
+        //TODO: handle exceptions
+        return syncQueueRepository.findById(id).get();
+    }
 }

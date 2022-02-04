@@ -31,6 +31,22 @@ public class SyncHistory implements Serializable {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDateTime dateLastSync;
 
+    @Basic
+    @Column(name = "processed")
+    private Integer processed;
+
+    @Basic
+    @Column(name = "sync_queue_id")
+    private Long syncQueueId;
+
+    @Basic
+    @Column(name = "remote_access_token_id")
+    private Long remoteAccessTokenId;
+
+    @Basic
+    @Column(name = "upload_size")
+    private Integer uploadSize;
+
     @Transient
     private String facilityName;
 

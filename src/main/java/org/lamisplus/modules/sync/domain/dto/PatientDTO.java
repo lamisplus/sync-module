@@ -46,4 +46,6 @@ public class PatientDTO {
 
     private int archived;
 
+    private String patientNumberType;
+
 }

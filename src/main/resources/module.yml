@@ -1,0 +1,6 @@
+name: Sync
+version: 1.0.0
+basePackage: org.lamisplus.modules.sync
+menuUrl: /across/resources/static/sync/index.html
+menuName: Sync
+description: Sync Module

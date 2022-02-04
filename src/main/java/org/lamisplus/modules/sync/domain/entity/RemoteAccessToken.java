@@ -32,4 +32,8 @@ public class RemoteAccessToken  implements Serializable {
     @Column(name = "token")
     private String token;
 
+    @Basic
+    @Column(name = "application_user_id")
+    private Long applicationUserId;
+
 }
