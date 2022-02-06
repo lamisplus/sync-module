@@ -5,7 +5,8 @@ import org.lamisplus.modules.sync.domain.mapper.EncounterMapper;
 import org.lamisplus.modules.sync.domain.mapper.FormDataMapper;
 import org.lamisplus.modules.sync.domain.mapper.PatientMapper;
 import org.lamisplus.modules.sync.domain.mapper.VisitMapper;
-import org.lamisplus.modules.sync.repository.*;
+import org.lamisplus.modules.base.repository.*;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ContextConfiguration;
@@ -14,8 +15,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 @ContextConfiguration(classes = {ObjectSerializer.class})
 @ExtendWith(SpringExtension.class)
 class ObjectSerializerTest {
-    @MockBean
-    private ClientRepository clientRepository;
 
     @MockBean
     private EncounterMapper encounterMapper;

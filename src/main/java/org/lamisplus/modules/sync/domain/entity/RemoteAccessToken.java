@@ -4,6 +4,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotEmpty;
 import java.io.Serializable;
 
 @Data
@@ -18,14 +19,17 @@ public class RemoteAccessToken  implements Serializable {
 
     @Basic
     @Column(name = "url")
+    @NotEmpty(message = "url is mandatory")
     private String url;
 
     @Basic
     @Column(name = "username")
+    @NotEmpty(message = "username is mandatory")
     private String username;
 
     @Basic
     @Column(name = "password")
+    @NotEmpty(message = "password is mandatory")
     private String password;
 
     @Basic

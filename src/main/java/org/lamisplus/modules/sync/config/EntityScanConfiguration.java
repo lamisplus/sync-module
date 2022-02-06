@@ -3,7 +3,8 @@ package org.lamisplus.modules.sync.config;
 import com.foreach.across.core.annotations.ModuleConfiguration;
 import com.foreach.across.modules.hibernate.provider.HibernatePackageConfigurer;
 import com.foreach.across.modules.hibernate.provider.HibernatePackageRegistry;
-import org.lamisplus.modules.sync.domain.BaseDomain;
+import org.lamisplus.modules.base.domain.BaseDomain;
+import org.lamisplus.modules.sync.domain.SyncDomain;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,6 +16,6 @@ public class EntityScanConfiguration implements HibernatePackageConfigurer {
     }
 
     public void configureHibernatePackage(HibernatePackageRegistry hibernatePackageRegistry) {
-        hibernatePackageRegistry.addPackageToScan(BaseDomain.class);
+        hibernatePackageRegistry.addPackageToScan(SyncDomain.class, BaseDomain.class);
     }
 }

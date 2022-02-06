@@ -92,7 +92,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.lamisplus.modules.sync.domain.entity.SyncQueue;
-import org.lamisplus.modules.sync.repository.SyncQueueRepository;
+import org.lamisplus.modules.sync.repo.SyncQueueRepository;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -104,6 +104,7 @@ import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -127,8 +128,10 @@ public class QueueManager {
         syncQueue.setTableName(table);
         syncQueue.setDateCreated(LocalDateTime.now());
         syncQueue.setProcessed(0);
-        syncQueue = syncQueueRepository.save(syncQueue);
-        return syncQueue;
+        Optional<SyncQueue> optionalSyncQueue = syncQueueRepository.getLastSaved();
+        if(optionalSyncQueue.isPresent()) return optionalSyncQueue.get();
+
+        return null;
     }
 
 
@@ -149,13 +152,20 @@ public class QueueManager {
                         if (!list.isEmpty()) {
                             syncQueue.setProcessed(1);
                             syncQueueRepository.save(syncQueue);
-                            FileUtils.deleteDirectory(file);
+                            targetStream.close();
+
+                            Thread.sleep(500);
+
+                            FileUtils.forceDeleteOnExit(file);
+                            FileUtils.deleteQuietly(file);
+
                             log.info("deleting file : {}", file.getName());
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
+                    }finally {
+                        FileUtils.deleteQuietly(file);
                     }
-
                 });
     }
 }

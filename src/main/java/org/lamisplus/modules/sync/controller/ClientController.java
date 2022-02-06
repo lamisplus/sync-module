@@ -8,10 +8,14 @@ import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import io.github.resilience4j.retry.annotation.Retry;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.lamisplus.modules.base.domain.entity.OrganisationUnit;
+import org.lamisplus.modules.base.repository.OrganisationUnitRepository;
 import org.lamisplus.modules.sync.domain.dto.RemoteUrlDTO;
 import org.lamisplus.modules.sync.domain.dto.UploadDTO;
-import org.lamisplus.modules.sync.domain.entity.*;
-import org.lamisplus.modules.sync.repository.OrganisationUnitRepository;
+import org.lamisplus.modules.sync.domain.entity.RemoteAccessToken;
+import org.lamisplus.modules.sync.domain.entity.SyncHistory;
+import org.lamisplus.modules.sync.domain.entity.SyncQueue;
+import org.lamisplus.modules.sync.domain.entity.Tables;
 import org.lamisplus.modules.sync.service.ObjectSerializer;
 import org.lamisplus.modules.sync.service.RemoteAccessTokenService;
 import org.lamisplus.modules.sync.service.SyncHistoryService;
@@ -19,7 +23,10 @@ import org.lamisplus.modules.sync.utility.HttpConnectionManager;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 import java.time.LocalDateTime;
@@ -130,7 +137,8 @@ public class ClientController {
     @RequestMapping(value = "/remote-access-token",
             method = RequestMethod.POST,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> remoteAccessToken(@RequestBody RemoteAccessToken remoteAccessToken) {
+    public ResponseEntity<String> remoteAccessToken(@Valid @RequestBody RemoteAccessToken remoteAccessToken) {
+
         remoteAccessTokenService.save(remoteAccessToken);
         return ResponseEntity.ok("Successful");
     }

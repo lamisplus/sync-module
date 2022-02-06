@@ -24,7 +24,7 @@ public class PatientDTO {
 
     private String uuid;
 
-    private String patientNumber;
+    private String hospitalNumber; //TODO: change to hospitalNumber before demo
 
     private Long  organisationUnitId;
 

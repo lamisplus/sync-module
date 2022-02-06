@@ -1,9 +1,9 @@
 package org.lamisplus.modules.sync.domain.mapper;
 
+import org.lamisplus.modules.base.domain.entity.Encounter;
+import org.lamisplus.modules.base.domain.entity.Patient;
+import org.lamisplus.modules.base.domain.entity.Visit;
 import org.lamisplus.modules.sync.domain.dto.EncounterDTO;
-import org.lamisplus.modules.sync.domain.entity.Encounter;
-import org.lamisplus.modules.sync.domain.entity.Patient;
-import org.lamisplus.modules.sync.domain.entity.Visit;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;

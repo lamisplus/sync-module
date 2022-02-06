@@ -4,14 +4,13 @@ import com.google.common.hash.Hashing;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.io.FileUtils;
 import org.lamisplus.modules.sync.domain.entity.SyncQueue;
-import org.lamisplus.modules.sync.repository.SyncQueueRepository;
+import org.lamisplus.modules.sync.repo.SyncQueueRepository;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.util.Date;
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -42,8 +41,11 @@ public class SyncQueueService {
         if (!hash.equals(Hashing.sha256().hashBytes(bytes).toString())) syncQueue.setProcessed(-1);
         else syncQueue.setProcessed(0);
 
-        syncQueue = syncQueueRepository.save(syncQueue);
-        return syncQueue;
+        if(syncQueueRepository.save(syncQueue) > 0){
+            syncQueue = syncQueueRepository.findByFileNameAndOrganisationUnitAnd(syncQueue.getFileName(), syncQueue.getOrganisationUnitId(), syncQueue.getDateCreated()).get();
+            return syncQueue;
+        }
+        return null;
     }
 
     public SyncQueue getAllSyncQueueById(Long id) {

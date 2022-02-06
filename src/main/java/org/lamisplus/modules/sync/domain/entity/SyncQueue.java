@@ -3,7 +3,6 @@ package org.lamisplus.modules.sync.domain.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.ToString;
 import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
@@ -40,4 +39,8 @@ public class SyncQueue implements Serializable {
     @Basic
     @Column(name = "processed")
     private Integer processed;
+
+    @Basic
+    @Column(name = "upload_size")
+    private Integer processedSize;
 }

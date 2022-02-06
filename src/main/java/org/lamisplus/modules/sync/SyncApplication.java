@@ -8,6 +8,7 @@ import com.foreach.across.modules.web.AcrossWebModule;
 import lombok.extern.slf4j.Slf4j;
 import org.lamisplus.modules.base.BaseModule;
 import org.springframework.boot.SpringApplication;
+import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import springfox.documentation.builders.ApiInfoBuilder;
@@ -25,39 +26,22 @@ import java.util.List;
 @AcrossApplication(
 		modules = {
 				AcrossHibernateJpaModule.NAME,
-				AcrossWebModule.NAME/*, BaseModule.NAME*/
-		}/*,modulePackageClasses = {BaseModule.class}*/)
+				AcrossWebModule.NAME, BaseModule.NAME, SyncModule.NAME
+		},
+		modulePackageClasses = {BaseModule.class})
 @Slf4j
 @EnableSwagger2
 @EnableScheduling
-public class SyncApplication extends AcrossModule {
-
+public class SyncApplication extends SpringBootServletInitializer
+{
 	public static void main(String[] args) {
 		SpringApplication.run(SyncApplication.class, args);
 	}
-
-	public static final String NAME = "SyncModule";
-
-	public SyncApplication() {
-		super();
-		addApplicationContextConfigurer(new ComponentScanConfigurer(
-				getClass().getPackage().getName() +".controller",
-				getClass().getPackage().getName() +".service",
-				getClass().getPackage().getName() +".repository",
-				getClass().getPackage().getName() +".config",
-				getClass().getPackage().getName() +".domain",
-				getClass().getPackage().getName() +".domain.mapper",
-				getClass().getPackage().getName() +".utility"));
-	}
-
-	public String getName() {
-		return NAME;
-	}
-
 	/*
 	 * Provides sensible defaults and convenience methods for configuration.
 	 * @return a Docket
 	 */
+
 	@Bean
 	public Docket api() {
 		return new Docket(DocumentationType.SWAGGER_2)
@@ -74,9 +58,10 @@ public class SyncApplication extends AcrossModule {
 	 *
 	 * @return ApiInfo for documentation
 	 */
+
 	private ApiInfo apiInfo() {
 		return new ApiInfoBuilder()
-				.title("Sync Module")
+				.title("Sync")
 				.description("Sync Application Api Documentation")
 				.license("Apache 2.0")
 				.licenseUrl("http://www.apache.org/licenses/LICENSE-2.0.html")
@@ -106,4 +91,5 @@ public class SyncApplication extends AcrossModule {
 	private ApiKey apiKey() {
 		return new ApiKey("JWT", "Authorization", "header");
 	}
+
 }

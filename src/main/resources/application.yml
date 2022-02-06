@@ -1,3 +1,54 @@
+across:
+  configuration:
+    validate: false
+  web:
+    resources:
+      caching:
+        period: 2592000
+acrossHibernate:
+  create-unit-of-work-factory: true
+  hibernate-properties:
+    hibernate.format_sql: true
+    hibernate.use_sql_comments: false
+    hibernate.show_sql: false
+    hibernate.event.merge.enty_copy_observer: allow
+applicationInfo:
+  applicationId: sync
+  applicationName: SYNC
+  buildDate: "@timestamp@"
+  buildId: "@pom.version@-@build.revision@"
+build:
+  number: "@build.revision@"
+logging:
+  request-response:
+    enabled: true
+
+  file:
+    name: application-debug.log
+server:
+  error:
+    whitelabel:
+      enabled: false
+    include-stacktrace:
+      facility: false
+  datasource:
+    hikari:
+      auto-commit: false
+      data-source-properties:
+        cachePrepStmts: true
+        prepStmtCacheSize: 250
+        prepStmtCacheSqlLimit: 2048
+        useServerPrepStmts: true
+  compression:
+    enabled: true
+    mime-types: text/html,text/xml,text/plain,text/css,text/javascript,application/javascript,application/json
+  http2:
+    enabled: true
+  port: 8082
+
+  tomcat:
+    uri-encoding: UTF-8
+    connection-timeout: 20s
 resilience4j.circuitbreaker:
   instances:
     service1:
@@ -43,10 +94,6 @@ resilience4j.thread-pool-bulkhead:
       maxThreadPoolSize: 1
       coreThreadPoolSize: 1
       queueCapacity: 12
-
-server:
-  port: 8081
-
 spring:
   datasource:
     driver-class-name: org.postgresql.Driver
@@ -65,3 +112,10 @@ spring:
 
 remote:
   lamis.url: http://localhost:8081/api/sync/
+
+jwt:
+  # This token must be encoded using Base64 and be at least 256 bits long (you can type `openssl rand -base64 64` on your command line to generate a 512 bits one)
+  base64-secret: YzMzNjBmOTcwN2Y4YmNmNWViMzhhNjk5MjhmMmY5OTZkNWUxYzIwM2Q5ZWU4OWIzNTZmZTBlOTMzZjFhN2ZmMzBlMDIzMGRkYWNkYTIwOThmY2E1ZjNhYTAxODA0NTJkY2U5NTYxZTI1YjA1NTIyN2IwMTZlMTRlMDM0OTIyNzM=
+  # Token is valid 12 hours
+  token-validity-in-milli-seconds: 43200000
+  token-validity-in-milli-seconds-for-remember-me: 43200000

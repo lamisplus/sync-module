@@ -2,9 +2,10 @@ package org.lamisplus.modules.sync.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.lamisplus.modules.sync.domain.entity.*;
+import org.lamisplus.modules.base.domain.entity.*;
+import org.lamisplus.modules.base.repository.*;
+import org.lamisplus.modules.sync.domain.entity.Tables;
 import org.lamisplus.modules.sync.domain.mapper.*;
-import org.lamisplus.modules.sync.repository.*;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -27,8 +28,8 @@ public class ObjectSerializer {
     private final FormDataMapper formDataMapper;
     private final VisitMapper visitMapper;
     private final AppointmentMapper appointmentMapper;
-    private final ClientRepository clientRepository;
-    private final UuidService uuidService;
+    /*private final ClientRepository clientRepository;
+    private final UuidService uuidService;*/
 
     public List<?> serialize(Tables table, long facilityId, LocalDateTime dateLastSync) {
 

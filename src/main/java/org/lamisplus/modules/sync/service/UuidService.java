@@ -1,14 +1,14 @@
 package org.lamisplus.modules.sync.service;
 
 import lombok.RequiredArgsConstructor;
-import org.lamisplus.modules.sync.domain.entity.Encounter;
-import org.lamisplus.modules.sync.domain.entity.FormData;
-import org.lamisplus.modules.sync.domain.entity.Patient;
-import org.lamisplus.modules.sync.domain.entity.Visit;
-import org.lamisplus.modules.sync.repository.EncounterRepository;
-import org.lamisplus.modules.sync.repository.FormDataRepository;
-import org.lamisplus.modules.sync.repository.PatientRepository;
-import org.lamisplus.modules.sync.repository.VisitRepository;
+import org.lamisplus.modules.base.domain.entity.Encounter;
+import org.lamisplus.modules.base.domain.entity.FormData;
+import org.lamisplus.modules.base.domain.entity.Patient;
+import org.lamisplus.modules.base.domain.entity.Visit;
+import org.lamisplus.modules.base.repository.EncounterRepository;
+import org.lamisplus.modules.base.repository.FormDataRepository;
+import org.lamisplus.modules.base.repository.PatientRepository;
+import org.lamisplus.modules.base.repository.VisitRepository;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
