@@ -41,7 +41,7 @@ public class SyncModule extends AcrossModule
                 getClass().getPackage().getName() +".domain.mapper",
                 getClass().getPackage().getName() +".utility",
                 getClass().getPackage().getName() +".component",
-                getClass().getPackage().getName() +".repository"));
+                getClass().getPackage().getName() +".repo"));
     }
     @Override
     public String getName() {

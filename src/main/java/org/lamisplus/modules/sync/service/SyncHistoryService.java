@@ -26,7 +26,6 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class SyncHistoryService {
 
-    @Qualifier("syncHistoryRepository")
     private final SyncHistoryRepository syncHistoryRepository;
     private final RemoteAccessTokenRepository remoteAccessTokenRepository;
     private final OrganisationUnitRepository organisationUnitRepository;

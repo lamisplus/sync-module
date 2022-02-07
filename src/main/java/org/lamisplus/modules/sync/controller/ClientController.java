@@ -89,7 +89,9 @@ public class ClientController {
 
                         syncHistory.setProcessed(syncQueue.getProcessed());
                         syncHistory.setSyncQueueId(syncQueue.getId());
-                        syncHistory.setRemoteAccessTokenId(uploadDTO.getRemoteAccessTokenId());
+
+                        //TODO: get remote access token
+                        syncHistory.setRemoteAccessTokenId(2L/*uploadDTO.getRemoteAccessTokenId()*/);
                         syncHistory.setUploadSize(serializeTableRecords.size());
                     }catch (Exception e){
                         e.printStackTrace();
