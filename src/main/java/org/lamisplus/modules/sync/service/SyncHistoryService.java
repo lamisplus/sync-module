@@ -46,7 +46,7 @@ public class SyncHistoryService {
             Optional<OrganisationUnit> organisationUnit = organisationUnitRepository.findById(syncHistory.getOrganisationUnitId());
             if(organisationUnit.isPresent()) {
                 syncHistory.setFacilityName(organisationUnit.get().getName());
-                syncHistory.setStatus("Processing");
+                //syncHistory.setStatus("Processing");
                 syncHistoryList1.add(syncHistory);
             }
         });

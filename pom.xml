@@ -10,12 +10,13 @@
 	</parent>
 
 	<groupId>org.lamisplus.modules</groupId>
-	<artifactId>sync-module</artifactId>
+	<artifactId>sync</artifactId>
 	<version>1.0.0</version>
 	<packaging>jar</packaging>
 	<description>Sync Module</description>
 	<properties>
 		<java.version>1.8</java.version>
+		<maven.build.timestamp.format>yyyy-MM-dd'T'HH:mm:ss'Z'</maven.build.timestamp.format>
 		<maven.test.skip>true</maven.test.skip>
 	</properties>
 
@@ -84,12 +85,6 @@
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
 			<optional>true</optional>
-		</dependency>
-
-		<dependency>
-			<groupId>com.squareup.okhttp3</groupId>
-			<artifactId>okhttp</artifactId>
-			<version>4.9.1</version>
 		</dependency>
 
 		<dependency>
@@ -167,12 +162,6 @@
 		</dependency>
 
 		<dependency>
-			<groupId>io.github.resilience4j</groupId>
-			<artifactId>resilience4j-spring-boot2</artifactId>
-			<version>1.7.1</version>
-		</dependency>
-
-		<dependency>
 			<groupId>com.squareup.okhttp3</groupId>
 			<artifactId>okhttp</artifactId>
 			<version>4.9.1</version>
@@ -195,16 +184,16 @@
 		<finalName>${project.artifactId}</finalName>
 		<defaultGoal>spring-boot:run</defaultGoal>
 		<plugins>
-			<plugin>
+			<!--<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-war-plugin</artifactId>
 				<version>3.3.0</version>
-				<!-- Excluding the webapp file from war -->
+				&lt;!&ndash; Excluding the webapp file from war &ndash;&gt;
 				<configuration>
 					<warSourceExcludes>target/base-module/**, */**</warSourceExcludes>
 					<packagingExcludes>src/main/webapp/**</packagingExcludes>
 				</configuration>
-			</plugin>
+			</plugin>-->
 			<!--<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>

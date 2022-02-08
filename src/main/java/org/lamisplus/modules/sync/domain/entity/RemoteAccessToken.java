@@ -29,12 +29,16 @@ public class RemoteAccessToken  implements Serializable {
 
     @Basic
     @Column(name = "password")
-    @NotEmpty(message = "password is mandatory")
+    //@NotEmpty(message = "password is mandatory")
     private String password;
 
     @Basic
     @Column(name = "token")
     private String token;
+
+    @Basic
+    @Column(name = "status")
+    private Long status;
 
     @Basic
     @Column(name = "application_user_id")

@@ -33,6 +33,7 @@ public class HttpConnectionManager {
                 .url(url)
                 .addHeader("User-Agent", "OkHttp Bot")
                 .addHeader("Hash-Value", hash)
+                .addHeader("token", "lamisplus")
                 .post(body)
                 .build();
 
@@ -47,8 +48,5 @@ public class HttpConnectionManager {
             if (!response.isSuccessful()) throw new IOException("Unexpected code " + response);
            return Objects.requireNonNull(response.body()).string();
         }
-
     }
-
-
 }

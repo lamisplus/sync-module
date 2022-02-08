@@ -61,8 +61,8 @@ public class SyncApplication extends SpringBootServletInitializer
 
 	private ApiInfo apiInfo() {
 		return new ApiInfoBuilder()
-				.title("Sync")
-				.description("Sync Application Api Documentation")
+				.title("Lamisplus")
+				.description("Lamisplus Application Api Documentation")
 				.license("Apache 2.0")
 				.licenseUrl("http://www.apache.org/licenses/LICENSE-2.0.html")
 				.termsOfServiceUrl("http://swagger.io/terms/")

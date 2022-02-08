@@ -18,9 +18,9 @@ public class RemoteAccessTokenRepository {
         return jdbcTemplate.query("SELECT * FROM remote_access_token",
                 new BeanPropertyRowMapper<RemoteAccessToken>(RemoteAccessToken.class));
     }
-    public List<RemoteAccessToken> findAllByName(String username) {
+    public Optional<RemoteAccessToken> findByName(String username) {
         return jdbcTemplate.query("SELECT * FROM remote_access_token WHERE username = ?",
-                new BeanPropertyRowMapper<RemoteAccessToken>(RemoteAccessToken.class), username);
+                new BeanPropertyRowMapper<RemoteAccessToken>(RemoteAccessToken.class), username).stream().findFirst();
     }
 
     public Optional<RemoteAccessToken> findById(Long id) {

@@ -8,6 +8,7 @@ import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import io.github.resilience4j.retry.annotation.Retry;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.lamisplus.modules.base.controller.apierror.EntityNotFoundException;
 import org.lamisplus.modules.base.domain.entity.OrganisationUnit;
 import org.lamisplus.modules.base.repository.OrganisationUnitRepository;
 import org.lamisplus.modules.sync.domain.dto.RemoteUrlDTO;
@@ -52,6 +53,8 @@ public class ClientController {
     @Retry(name = "retryService2", fallbackMethod = "retryFallback")
     public ResponseEntity<String> sender(@Valid @RequestBody UploadDTO uploadDTO) throws Exception {
         log.info("path: {}", uploadDTO.getServerUrl());
+        /*RemoteAccessToken remoteAccessToken = remoteAccessTokenRepository.findById(uploadDTO.getRemoteAccessTokenId())
+                .orElseThrow(() -> new EntityNotFoundException(RemoteAccessToken.class, "id", ""+uploadDTO.getRemoteAccessTokenId()));*/
         mapper.enable(SerializationFeature.INDENT_OUTPUT);
         mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
         System.out.println("table values: => " + Arrays.toString(Tables.values()));
@@ -136,14 +139,14 @@ public class ClientController {
         return ResponseEntity.ok(syncHistoryService.getSyncHistories());
     }
 
-    @RequestMapping(value = "/remote-access-token",
+    /*@RequestMapping(value = "/remote-access-token",
             method = RequestMethod.POST,
             produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> remoteAccessToken(@Valid @RequestBody RemoteAccessToken remoteAccessToken) {
 
         remoteAccessTokenService.save(remoteAccessToken);
         return ResponseEntity.ok("Successful");
-    }
+    }*/
 
     //@GetMapping("/remote-urls")
     @RequestMapping(value = "/remote-urls",
@@ -151,5 +154,12 @@ public class ClientController {
             produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<RemoteUrlDTO>> getRemoteUrls() {
         return ResponseEntity.ok(remoteAccessTokenService.getRemoteUrls());
+    }
+
+    @RequestMapping(value = "/remote-access-token",
+            method = RequestMethod.POST,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public void sendToRemoteAccessToServer(@Valid @RequestBody RemoteAccessToken remoteAccessToken) {
+        remoteAccessTokenService.sendToRemoteAccessToServer(remoteAccessToken);
     }
 }
