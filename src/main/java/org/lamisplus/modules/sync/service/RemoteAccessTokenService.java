@@ -58,6 +58,8 @@ public class RemoteAccessTokenService {
             objectMapper.enable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
 
             remoteAccessToken = objectMapper.readValue(response, RemoteAccessToken.class);
+            //Null the id to create a new record
+            remoteAccessToken.setId(null);
             remoteAccessTokenRepository.save(remoteAccessToken);
         }catch (Exception e){
             e.printStackTrace();

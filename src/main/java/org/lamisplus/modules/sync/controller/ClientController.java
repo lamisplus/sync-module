@@ -17,6 +17,7 @@ import org.lamisplus.modules.sync.domain.entity.RemoteAccessToken;
 import org.lamisplus.modules.sync.domain.entity.SyncHistory;
 import org.lamisplus.modules.sync.domain.entity.SyncQueue;
 import org.lamisplus.modules.sync.domain.entity.Tables;
+import org.lamisplus.modules.sync.repo.RemoteAccessTokenRepository;
 import org.lamisplus.modules.sync.service.ObjectSerializer;
 import org.lamisplus.modules.sync.service.RemoteAccessTokenService;
 import org.lamisplus.modules.sync.service.SyncHistoryService;
@@ -43,6 +44,7 @@ public class ClientController {
     private final ObjectMapper mapper = new ObjectMapper();
     private final SyncHistoryService syncHistoryService;
     private final OrganisationUnitRepository organisationUnitRepository;
+    private final RemoteAccessTokenRepository remoteAccessTokenRepository;
     private final RemoteAccessTokenService remoteAccessTokenService;
 
 
@@ -53,8 +55,8 @@ public class ClientController {
     @Retry(name = "retryService2", fallbackMethod = "retryFallback")
     public ResponseEntity<String> sender(@Valid @RequestBody UploadDTO uploadDTO) throws Exception {
         log.info("path: {}", uploadDTO.getServerUrl());
-        /*RemoteAccessToken remoteAccessToken = remoteAccessTokenRepository.findById(uploadDTO.getRemoteAccessTokenId())
-                .orElseThrow(() -> new EntityNotFoundException(RemoteAccessToken.class, "id", ""+uploadDTO.getRemoteAccessTokenId()));*/
+        RemoteAccessToken remoteAccessToken = remoteAccessTokenRepository.findByUrl(uploadDTO.getServerUrl())
+                .orElseThrow(() -> new EntityNotFoundException(RemoteAccessToken.class, "url", ""+uploadDTO.getServerUrl()));
         mapper.enable(SerializationFeature.INDENT_OUTPUT);
         mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
         System.out.println("table values: => " + Arrays.toString(Tables.values()));
@@ -94,7 +96,7 @@ public class ClientController {
                         syncHistory.setSyncQueueId(syncQueue.getId());
 
                         //TODO: get remote access token
-                        syncHistory.setRemoteAccessTokenId(2L/*uploadDTO.getRemoteAccessTokenId()*/);
+                        syncHistory.setRemoteAccessTokenId(remoteAccessToken.getId());
                         syncHistory.setUploadSize(serializeTableRecords.size());
                     }catch (Exception e){
                         e.printStackTrace();

@@ -28,6 +28,11 @@ public class RemoteAccessTokenRepository {
                 new BeanPropertyRowMapper<RemoteAccessToken>(RemoteAccessToken.class), id).stream().findFirst();
     }
 
+    public Optional<RemoteAccessToken> findByUrl(String url) {
+        return jdbcTemplate.query("SELECT * FROM remote_access_token WHERE url=?",
+                new BeanPropertyRowMapper<RemoteAccessToken>(RemoteAccessToken.class), url).stream().findFirst();
+    }
+
     public int deleteById(Long id) {
         return jdbcTemplate.update("DELETE FROM remote_access_token WHERE id=?", id);
     }
