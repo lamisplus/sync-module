@@ -52,8 +52,6 @@ public class RemoteAccessTokenService {
             byte [] byteArray = SerializationUtils.serialize(remoteAccessToken);
             String response = new HttpConnectionManager().post(byteArray, url);
 
-
-
             //For serializing the date on the sync queue
             ObjectMapper objectMapper = new ObjectMapper();
             objectMapper.registerModule(new JavaTimeModule());
