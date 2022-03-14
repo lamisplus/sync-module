@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.lamisplus.modules.base.controller.apierror.EntityNotFoundException;
 import org.lamisplus.modules.base.domain.entity.OrganisationUnit;
 import org.lamisplus.modules.base.repository.OrganisationUnitRepository;
 import org.lamisplus.modules.sync.domain.entity.RemoteAccessToken;
@@ -35,8 +36,8 @@ public class SyncHistoryService {
     }
 
     public SyncHistory getSyncHistory(String table, Long facilityId){
-        Optional<SyncHistory> syncHistory = syncHistoryRepository.findByTableNameAndOrganisationUnitId(table, facilityId);
-        return syncHistory.orElseGet(SyncHistory::new);
+        return syncHistoryRepository.findByTableNameAndOrganisationUnitId(table, facilityId)
+                .orElseThrow(()-> new EntityNotFoundException(SyncHistory.class, "Table & Facility", table + " & " + facilityId));
     }
 
     public List<SyncHistory> getSyncHistories() {

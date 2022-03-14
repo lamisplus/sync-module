@@ -1,120 +1,70 @@
 package org.lamisplus.modules.sync.service;
 
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.lamisplus.modules.sync.domain.mapper.EncounterMapper;
-import org.lamisplus.modules.sync.domain.mapper.FormDataMapper;
-import org.lamisplus.modules.sync.domain.mapper.PatientMapper;
-import org.lamisplus.modules.sync.domain.mapper.VisitMapper;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.lamisplus.modules.base.repository.*;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.lamisplus.modules.sync.domain.mapper.*;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.slf4j.Logger;
+import org.springframework.web.client.RestTemplate;
 
-@ContextConfiguration(classes = {ObjectDeserializer.class})
-@ExtendWith(SpringExtension.class)
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import static org.mockito.Mockito.*;
+
 class ObjectDeserializerTest {
-    @MockBean
-    private EncounterMapper encounterMapper;
+    @Mock
+    PatientRepository patientRepository;
+    @Mock
+    VisitRepository visitRepository;
+    @Mock
+    EncounterRepository encounterRepository;
+    @Mock
+    FormDataRepository formDataRepository;
+    @Mock
+    AppointmentRepository appointmentRepository;
+    @Mock
+    PatientMapper patientMapper;
+    @Mock
+    VisitMapper visitMapper;
+    @Mock
+    EncounterMapper encounterMapper;
+    @Mock
+    FormDataMapper formDataMapper;
+    @Mock
+    AppointmentMapper appointmentMapper;
+    @Mock
+    Logger log;
+    @InjectMocks
+    ObjectDeserializer objectDeserializer;
 
-    @MockBean
-    private EncounterRepository encounterRepository;
-
-    @MockBean
-    private FormDataMapper formDataMapper;
-
-    @MockBean
-    private FormDataRepository formDataRepository;
-
-    @Autowired
-    private ObjectDeserializer objectDeserializer;
-
-    @MockBean
-    private PatientMapper patientMapper;
-
-    @MockBean
-    private PatientRepository patientRepository;
-
-    @MockBean
-    private VisitMapper visitMapper;
-
-    @MockBean
-    private VisitRepository visitRepository;
-
-/*
-    @Test
-    void testDeserialize() {
-        // TODO: This test is incomplete.
-        //   Reason: R004 No meaningful assertions found.
-        //   Diffblue Cover was unable to create an assertion.
-        //   Make sure that fields modified by deserialize(String, String)
-        //   have package-private, protected, or public getters.
-        //   See https://diff.blue/R004 to resolve this issue.
-
-        this.objectDeserializer.deserialize("Data", "Table");
+    @BeforeEach
+    void setUp() {
+        MockitoAnnotations.initMocks(this);
     }
 
     @Test
-    void testDeserialize2() {
-        // TODO: This test is incomplete.
-        //   Reason: R004 No meaningful assertions found.
-        //   Diffblue Cover was unable to create an assertion.
-        //   Make sure that fields modified by deserialize(String, String)
-        //   have package-private, protected, or public getters.
-        //   See https://diff.blue/R004 to resolve this issue.
-
-        this.objectDeserializer.deserialize("encounter", "Table");
+    void testRestTemplate() {
+        RestTemplate result = objectDeserializer.restTemplate();
+        Assertions.assertEquals(null, result);
     }
 
     @Test
-    void testDeserialize3() {
-        assertThrows(RuntimeException.class, () -> this.objectDeserializer.deserialize("Data", "encounter"));
-    }
+    void testDeserialize() throws Exception {
+        when(patientMapper.toPatient(any())).thenReturn(null);
+        when(visitMapper.toVisit(any())).thenReturn(null);
+        when(encounterMapper.toEncounter(any())).thenReturn(null);
+        when(formDataMapper.toFormData(any())).thenReturn(null);
+        when(appointmentMapper.toAppointment(any())).thenReturn(null);
 
-    @Test
-    void testDeserialize4() {
-        assertThrows(RuntimeException.class, () -> this.objectDeserializer.deserialize("Data", "form_data"));
+        List result = objectDeserializer.deserialize(new byte[]{(byte) 0}, "table");
+        Assertions.assertEquals(new ArrayList(), result);
     }
-
-    @Test
-    void testDeserialize5() {
-        assertThrows(RuntimeException.class, () -> this.objectDeserializer.deserialize("Data", "patient"));
-    }
-
-    @Test
-    void testDeserialize6() {
-        assertThrows(RuntimeException.class, () -> this.objectDeserializer.deserialize("encounter", "encounter"));
-    }
-
-    @Test
-    void testDeserialize7() {
-        assertThrows(RuntimeException.class, () -> this.objectDeserializer.deserialize("Data", "visit"));
-    }
-
-    @Test
-    void testDeserialize8() {
-        assertThrows(RuntimeException.class, () -> this.objectDeserializer.deserialize("42", "encounter"));
-    }
-
-    @Test
-    void testDeserialize9() {
-        assertThrows(RuntimeException.class, () -> this.objectDeserializer.deserialize("", "encounter"));
-    }
-
-    @Test
-    void testDeserialize10() {
-        assertThrows(RuntimeException.class, () -> this.objectDeserializer.deserialize("42", "form_data"));
-    }
-
-    @Test
-    void testDeserialize11() {
-        assertThrows(RuntimeException.class, () -> this.objectDeserializer.deserialize("42", "patient"));
-    }
-
-    @Test
-    void testDeserialize12() {
-        assertThrows(RuntimeException.class, () -> this.objectDeserializer.deserialize("42", "visit"));
-    }
-*/
 }
 
+//Generated with love by TestMe :) Please report issues and submit feature requests at: http://weirddev.com/forum#!/testme

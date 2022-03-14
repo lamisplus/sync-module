@@ -5,8 +5,6 @@ import com.foreach.across.core.AcrossModule;
 import com.foreach.across.core.context.configurer.ComponentScanConfigurer;
 import com.foreach.across.modules.hibernate.jpa.AcrossHibernateJpaModule;
 import com.foreach.across.modules.web.AcrossWebModule;
-import org.lamisplus.modules.base.BaseModule;
-import org.lamisplus.modules.bootstrap.BootstrapModule;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import springfox.documentation.builders.ApiInfoBuilder;
@@ -23,9 +21,8 @@ import java.util.List;
 @AcrossApplication(
         modules = {
                 AcrossHibernateJpaModule.NAME,
-                AcrossWebModule.NAME, BaseModule.NAME
-        },
-        modulePackageClasses = {BaseModule.class})
+                AcrossWebModule.NAME
+        })
 public class SyncModule extends AcrossModule
 {
     public final static String NAME = "SyncModule";

@@ -90,13 +90,13 @@ public class ObjectSerializer {
 //            } else {
 //                formDataList = formDataRepository.getFormDataDueForServerUpload(dateLastSync);
 //            }
+            //TODO: This bit of code will always run, we need find a way to get dateLastSynced
             return formDataList.stream()
                     .filter(formData -> formData.getOrganisationUnitId().equals(facilityId))
                     .map(formData -> {
                         Encounter encounter = encounterRepository.findById(formData.getEncounterId()).get();
                         return formDataMapper.toFormDataDTO(formData, encounter);
                     }).collect(Collectors.toList());
-
         }
 
         if (table.name().equals("appointment")) {

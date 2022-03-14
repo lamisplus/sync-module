@@ -8,6 +8,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.SerializationUtils;
 import org.hibernate.id.UUIDGenerator;
 import org.lamisplus.modules.base.controller.apierror.RecordExistException;
+import org.lamisplus.modules.base.domain.entity.User;
+import org.lamisplus.modules.base.security.SecurityUtils;
+import org.lamisplus.modules.base.service.UserService;
 import org.lamisplus.modules.sync.domain.dto.RemoteUrlDTO;
 import org.lamisplus.modules.sync.domain.entity.RemoteAccessToken;
 import org.lamisplus.modules.sync.domain.entity.SyncQueue;
@@ -26,6 +29,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class RemoteAccessTokenService {
     private final RemoteAccessTokenRepository remoteAccessTokenRepository;
+    private final UserService userService;
 
     public RemoteAccessToken save(byte[] bytes) {
         RemoteAccessToken remoteAccessToken = (RemoteAccessToken)SerializationUtils.deserialize(bytes);
@@ -57,18 +61,30 @@ public class RemoteAccessTokenService {
             objectMapper.registerModule(new JavaTimeModule());
             objectMapper.enable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
 
-            remoteAccessToken = objectMapper.readValue(response, RemoteAccessToken.class);
+            final RemoteAccessToken savedRemoteAccessToken = objectMapper.readValue(response, RemoteAccessToken.class);
             //Null the id to create a new record
-            remoteAccessToken.setId(null);
-            remoteAccessTokenRepository.save(remoteAccessToken);
+            savedRemoteAccessToken.setId(null);
+            userService.getUserWithRoles().ifPresent(user -> {
+                savedRemoteAccessToken.setApplicationUserId(user.getId());
+            });
+            remoteAccessTokenRepository.save(savedRemoteAccessToken);
         }catch (Exception e){
             e.printStackTrace();
         }
     }
 
     public List<RemoteUrlDTO> getRemoteUrls() {
+        List<RemoteAccessToken> remoteAccessTokens;
+
+        Optional<User> optionalUser = userService.getUserWithRoles();
+
+        if(optionalUser.isPresent()){
+            remoteAccessTokens = remoteAccessTokenRepository.findAllByApplicationUserId(optionalUser.get().getId());
+        } else {
+            remoteAccessTokens = remoteAccessTokenRepository.findAll();
+        }
+
         List<RemoteUrlDTO> remoteUrlDTOS = new ArrayList<>();
-        List<RemoteAccessToken> remoteAccessTokens =  remoteAccessTokenRepository.findAll();
         remoteAccessTokens.forEach(remoteAccessToken -> {
             RemoteUrlDTO remoteUrlDTO = new RemoteUrlDTO();
             remoteUrlDTO.setId(remoteAccessToken.getId());

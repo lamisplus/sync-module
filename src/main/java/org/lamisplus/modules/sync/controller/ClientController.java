@@ -59,7 +59,7 @@ public class ClientController {
                 .orElseThrow(() -> new EntityNotFoundException(RemoteAccessToken.class, "url", ""+uploadDTO.getServerUrl()));
         mapper.enable(SerializationFeature.INDENT_OUTPUT);
         mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
-        System.out.println("table values: => " + Arrays.toString(Tables.values()));
+        log.info("table values: => {}", Arrays.toString(Tables.values()));
         for (Tables table : Tables.values()) {
             SyncHistory syncHistory = syncHistoryService.getSyncHistory(table.name(), uploadDTO.getFacilityId());
             LocalDateTime dateLastSync = syncHistory.getDateLastSync();
@@ -71,7 +71,7 @@ public class ClientController {
                 log.info("object size:  {} ", serializeTableRecords.size());
                 if (!serializeObject.toString().contains("No table records was retrieved for server sync")) {
                     String pathVariable = table.name().concat("/").concat(Long.toString(uploadDTO.getFacilityId()));
-                    System.out.println("path: " + pathVariable);
+                    //log.info("path: {}", pathVariable);
                     String url = uploadDTO.getServerUrl().concat("/api/sync/").concat(pathVariable);
 
                     log.info("url : {}", url);
@@ -95,7 +95,7 @@ public class ClientController {
                         syncHistory.setProcessed(syncQueue.getProcessed());
                         syncHistory.setSyncQueueId(syncQueue.getId());
 
-                        //TODO: get remote access token
+                        //get remote access token id
                         syncHistory.setRemoteAccessTokenId(remoteAccessToken.getId());
                         syncHistory.setUploadSize(serializeTableRecords.size());
                     }catch (Exception e){

@@ -49,4 +49,10 @@ public class RemoteAccessTokenRepository {
                 remoteAccessToken.getPassword(), remoteAccessToken.getToken(), remoteAccessToken.getUrl(),
                 remoteAccessToken.getUsername(), remoteAccessToken.getApplicationUserId(), remoteAccessToken.getId());
     }
+
+    public List<RemoteAccessToken> findAllByApplicationUserId(Long applicationUserId) {
+        return jdbcTemplate.query("SELECT * FROM remote_access_token WHERE application_user_id=?",
+                new BeanPropertyRowMapper<RemoteAccessToken>(RemoteAccessToken.class), applicationUserId);
+
+    }
 }
