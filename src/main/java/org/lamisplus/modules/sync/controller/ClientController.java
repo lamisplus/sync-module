@@ -1,6 +1,5 @@
 package org.lamisplus.modules.sync.controller;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -18,10 +17,9 @@ import org.lamisplus.modules.sync.domain.entity.SyncHistory;
 import org.lamisplus.modules.sync.domain.entity.SyncQueue;
 import org.lamisplus.modules.sync.domain.entity.Tables;
 import org.lamisplus.modules.sync.repo.RemoteAccessTokenRepository;
-import org.lamisplus.modules.sync.service.ObjectSerializer;
+//import org.lamisplus.modules.sync.service.ObjectSerializer;
 import org.lamisplus.modules.sync.service.RemoteAccessTokenService;
 import org.lamisplus.modules.sync.service.SyncHistoryService;
-import org.lamisplus.modules.sync.utility.HttpConnectionManager;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -40,7 +38,6 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("api/sync")
 public class ClientController {
-    private final ObjectSerializer objectSerializer;
     private final ObjectMapper mapper = new ObjectMapper();
     private final SyncHistoryService syncHistoryService;
     private final OrganisationUnitRepository organisationUnitRepository;
@@ -48,7 +45,7 @@ public class ClientController {
     private final RemoteAccessTokenService remoteAccessTokenService;
 
 
-    @RequestMapping(value = "/upload",
+   /* @RequestMapping(value = "/upload",
             method = RequestMethod.POST,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @CircuitBreaker(name = "service2", fallbackMethod = "getDefaultMessage")
@@ -107,7 +104,7 @@ public class ClientController {
             }
         }
         return ResponseEntity.ok("Successful");
-    }
+    }*/
 
     public ResponseEntity<String> getDefaultMessage(Exception exception) {
         String message = exception.getMessage();
