@@ -53,7 +53,7 @@ class SyncHistoryServiceTest {
     @Test
     void testGetSyncHistories() {
         List<SyncHistory> syncHistories = new ArrayList<>();
-        when(syncHistoryRepository.findSyncHistories()).thenReturn(syncHistories);
+        when(syncHistoryRepository.findSyncHistories(124L)).thenReturn(syncHistories);
 
         List<SyncHistory> result = syncHistoryService.getSyncHistories();
         Assertions.assertEquals(new ArrayList<SyncHistory>(), result);

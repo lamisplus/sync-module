@@ -1,13 +1,16 @@
 package org.lamisplus.modules.sync;
 
 import com.foreach.across.config.AcrossApplication;
-import com.foreach.across.core.AcrossModule;
-import com.foreach.across.core.context.configurer.ComponentScanConfigurer;
 import com.foreach.across.modules.hibernate.jpa.AcrossHibernateJpaModule;
 import com.foreach.across.modules.web.AcrossWebModule;
+import lombok.extern.slf4j.Slf4j;
 import org.lamisplus.modules.base.BaseModule;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.context.annotation.Bean;
+import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
@@ -15,6 +18,7 @@ import springfox.documentation.service.*;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spi.service.contexts.SecurityContext;
 import springfox.documentation.spring.web.plugins.Docket;
+import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 import java.util.Arrays;
 import java.util.List;
@@ -25,27 +29,28 @@ import java.util.List;
                 AcrossWebModule.NAME, BaseModule.NAME
         },
         modulePackageClasses = {BaseModule.class})
-public class SyncModule extends AcrossModule
-{
-    public final static String NAME = "SyncModule";
+@Slf4j
+@EnableSwagger2
+@EnableAsync
+@EnableScheduling
+public class SyncApplication extends SpringBootServletInitializer {
 
 
-    public SyncModule(){
-        super();
-        addApplicationContextConfigurer(new ComponentScanConfigurer(
-                getClass().getPackage().getName() +".controller",
-                getClass().getPackage().getName() +".service",
-                getClass().getPackage().getName() +".config",
-                getClass().getPackage().getName() +".domain",
-                getClass().getPackage().getName() +".domain.mapper",
-                getClass().getPackage().getName() +".utility",
-                getClass().getPackage().getName() +".component",
-                getClass().getPackage().getName() +".repo"));
+    public static void main(String[] args) {
+
+        SpringApplication.run(SyncApplication.class, args);
     }
+
+
     @Override
-    public String getName() {
-        return NAME;
+    protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
+        return application.sources(SyncApplication.class);
     }
+
+    /*
+     * Provides sensible defaults and convenience methods for configuration.
+     * @return a Docket
+     */
 
     @Bean
     public Docket api() {

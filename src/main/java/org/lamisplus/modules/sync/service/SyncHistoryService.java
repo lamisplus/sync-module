@@ -7,7 +7,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.lamisplus.modules.base.controller.apierror.EntityNotFoundException;
 import org.lamisplus.modules.base.domain.entity.OrganisationUnit;
+import org.lamisplus.modules.base.domain.entity.User;
 import org.lamisplus.modules.base.repository.OrganisationUnitRepository;
+import org.lamisplus.modules.base.service.UserService;
 import org.lamisplus.modules.sync.domain.entity.RemoteAccessToken;
 import org.lamisplus.modules.sync.domain.entity.SyncHistory;
 import org.lamisplus.modules.sync.domain.entity.SyncQueue;
@@ -27,9 +29,12 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class SyncHistoryService {
 
+
     private final SyncHistoryRepository syncHistoryRepository;
     private final RemoteAccessTokenRepository remoteAccessTokenRepository;
     private final OrganisationUnitRepository organisationUnitRepository;
+    private final UserService userService;
+
 
     public void save(SyncHistory syncHistory) {
         syncHistoryRepository.save(syncHistory);
@@ -42,7 +47,14 @@ public class SyncHistoryService {
 
     public List<SyncHistory> getSyncHistories() {
         List<SyncHistory> syncHistoryList1 = new ArrayList<>();
-        List<SyncHistory> syncHistoryList = syncHistoryRepository.findSyncHistories();
+        User user = userService.getUserWithRoles().orElse(null);
+        Long currentOrganisationUnitId = null;
+
+        if(null != user){
+            currentOrganisationUnitId = user.getCurrentOrganisationUnitId();
+        }
+
+        List<SyncHistory> syncHistoryList = syncHistoryRepository.findSyncHistories(currentOrganisationUnitId);
         syncHistoryList.forEach(syncHistory -> {
             Optional<OrganisationUnit> organisationUnit = organisationUnitRepository.findById(syncHistory.getOrganisationUnitId());
             if(organisationUnit.isPresent()) {

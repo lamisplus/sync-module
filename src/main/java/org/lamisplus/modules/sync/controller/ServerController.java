@@ -2,6 +2,7 @@ package org.lamisplus.modules.sync.controller;
 
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.lamisplus.modules.sync.domain.entity.RemoteAccessToken;
 import org.lamisplus.modules.sync.domain.entity.SyncQueue;
@@ -49,6 +50,7 @@ public class ServerController {
     @RequestMapping(value = "/server/remote-access-token",
             method = RequestMethod.POST,
             produces = MediaType.APPLICATION_JSON_VALUE)
+    @SneakyThrows
     public ResponseEntity<RemoteAccessToken> save(@Valid @RequestBody byte[] bytes) {
 
         return ResponseEntity.ok(remoteAccessTokenService.save(bytes));

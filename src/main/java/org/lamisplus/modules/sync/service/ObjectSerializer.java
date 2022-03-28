@@ -119,6 +119,5 @@ public class ObjectSerializer {
         List<String> msg = new LinkedList<>();
         msg.add("No table records was retrieved for server sync");
         return msg;
-
     }
 }

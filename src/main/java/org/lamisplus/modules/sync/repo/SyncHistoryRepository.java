@@ -19,8 +19,9 @@ public class SyncHistoryRepository {
         return jdbcTemplate.query("SELECT * FROM sync_history", new BeanPropertyRowMapper<SyncHistory>(SyncHistory.class));
     }
 
-    public List<SyncHistory> findSyncHistories() {
-        return jdbcTemplate.query("SELECT * from sync_history sh order by sh.date_last_sync desc limit 100", new BeanPropertyRowMapper<SyncHistory>(SyncHistory.class));
+    public List<SyncHistory> findSyncHistories(Long organisationUnitId) {
+        return jdbcTemplate.query("SELECT * from sync_history sh where organisation_unit_id=? order by sh.date_last_sync desc limit 100",
+                new BeanPropertyRowMapper<SyncHistory>(SyncHistory.class), organisationUnitId);
     }
 
     public Optional<SyncHistory> findByTableNameAndOrganisationUnitId(String tableName, Long organisationUnitId) {

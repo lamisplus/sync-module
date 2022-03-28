@@ -28,7 +28,7 @@ public class SyncHistory implements Serializable {
 
     @Basic
     @Column(name = "date_last_sync")
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd@HH:mm:ss")
     private LocalDateTime dateLastSync;
 
     @Basic

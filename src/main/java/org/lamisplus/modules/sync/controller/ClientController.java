@@ -109,21 +109,21 @@ public class ClientController {
         return ResponseEntity.ok("Successful");
     }
 
-    public ResponseEntity<String> getDefaultMessage(Exception exception) {
+    /*public ResponseEntity<String> getDefaultMessage(Exception exception) {
         String message = exception.getMessage();
         if (message.contains("Failed to connect")) {
             message = "server is down kindly try again later";
         }
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(message);
-    }
+    }*/
 
-    public ResponseEntity<String> retryFallback(Exception exception) {
+    /*public ResponseEntity<String> retryFallback(Exception exception) {
         String message = exception.getMessage();
         if (message.contains("Failed to connect")) {
             message = "server is down kindly try again later inside retry!!!";
         }
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(message);
-    }
+    }*/
 
     //@GetMapping("/facilities")
     @RequestMapping(value = "/facilities",
