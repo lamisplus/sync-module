@@ -5,7 +5,8 @@ import com.foreach.across.core.AcrossModule;
 import com.foreach.across.core.context.configurer.ComponentScanConfigurer;
 import com.foreach.across.modules.hibernate.jpa.AcrossHibernateJpaModule;
 import com.foreach.across.modules.web.AcrossWebModule;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.lamisplus.modules.base.BaseModule;
+import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.annotation.Bean;
 import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.PathSelectors;
@@ -31,14 +32,9 @@ public class SyncModule extends AcrossModule
     public SyncModule(){
         super();
         addApplicationContextConfigurer(new ComponentScanConfigurer(
-                getClass().getPackage().getName() +".controller",
-                getClass().getPackage().getName() +".service",
                 getClass().getPackage().getName() +".config",
-                getClass().getPackage().getName() +".domain",
-                getClass().getPackage().getName() +".domain.mapper",
-                getClass().getPackage().getName() +".utility",
-                getClass().getPackage().getName() +".component",
-                getClass().getPackage().getName() +".repo"));
+                getClass().getPackage().getName() +".repository",
+                getClass().getPackage().getName() +".entity"));
     }
     @Override
     public String getName() {
