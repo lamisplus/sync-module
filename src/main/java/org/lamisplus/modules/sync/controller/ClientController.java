@@ -45,7 +45,7 @@ public class ClientController {
     private final RemoteAccessTokenService remoteAccessTokenService;
 
 
-   /* @RequestMapping(value = "/upload",
+    @RequestMapping(value = "/upload",
             method = RequestMethod.POST,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @CircuitBreaker(name = "service2", fallbackMethod = "getDefaultMessage")
@@ -104,7 +104,7 @@ public class ClientController {
             }
         }
         return ResponseEntity.ok("Successful");
-    }*/
+    }
 
     public ResponseEntity<String> getDefaultMessage(Exception exception) {
         String message = exception.getMessage();
