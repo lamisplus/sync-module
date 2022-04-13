@@ -19,6 +19,7 @@ import org.lamisplus.modules.sync.domain.entity.Tables;
 import org.lamisplus.modules.sync.repo.RemoteAccessTokenRepository;
 import org.lamisplus.modules.sync.utility.HttpConnectionManager;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -26,6 +27,7 @@ import javax.validation.Valid;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 @Slf4j
 @Service
@@ -36,7 +38,8 @@ public class SyncClientService {
     private final RemoteAccessTokenRepository remoteAccessTokenRepository;
     private final ObjectSerializer objectSerializer;
 
-    public String sender(UploadDTO uploadDTO) throws Exception {
+    @Async
+    public CompletableFuture<String> sender(UploadDTO uploadDTO) throws Exception {
         log.info("path: {}", uploadDTO.getServerUrl());
         RemoteAccessToken remoteAccessToken = remoteAccessTokenRepository.findByUrl(uploadDTO.getServerUrl())
                 .orElseThrow(() -> new EntityNotFoundException(RemoteAccessToken.class, "url", ""+uploadDTO.getServerUrl()));
@@ -98,7 +101,7 @@ public class SyncClientService {
                 }
             }
         }
-        return "Successful";
+        return CompletableFuture.completedFuture("Successful");
     }
 }
 

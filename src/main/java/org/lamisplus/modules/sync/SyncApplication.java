@@ -47,6 +47,7 @@ public class SyncApplication extends AcrossModule {
                 getClass().getPackage().getName() +".config",
                 getClass().getPackage().getName() +".domain",
                 getClass().getPackage().getName() +".domain.mapper",
+                getClass().getPackage().getName() +".installers",
                 getClass().getPackage().getName() +".utility",
                 getClass().getPackage().getName() +".component",
                 getClass().getPackage().getName() +".repo"));

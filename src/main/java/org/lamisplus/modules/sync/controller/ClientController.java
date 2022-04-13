@@ -28,10 +28,7 @@ import org.lamisplus.modules.sync.utility.HttpConnectionManager;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.time.LocalDateTime;
@@ -54,8 +51,13 @@ public class ClientController {
             produces = MediaType.APPLICATION_JSON_VALUE)
     //@CircuitBreaker(name = "service2", fallbackMethod = "getDefaultMessage")
     //@Retry(name = "retryService2", fallbackMethod = "retryFallback")
-    public ResponseEntity<String> sender(@Valid @RequestBody UploadDTO uploadDTO) throws Exception {
-        return ResponseEntity.ok(syncClientService.sender(uploadDTO));
+    public @ResponseBody ResponseEntity sender(@Valid @RequestBody UploadDTO uploadDTO) throws Exception {
+        try {
+            syncClientService.sender(uploadDTO);
+            return ResponseEntity.status(HttpStatus.OK).build();
+        } catch(final Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 
     //@GetMapping("/facilities")

@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+    <changeSet failOnError="false" author="Chukwuemeka Ilozue" id="1648201114214-1-sync">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">
+                SELECT COUNT(*) FROM role WHERE name='User';
+            </sqlCheck>
+        </preConditions>
+        <sqlFile dbms="postgresql"
+                 path="sql/role.sql"
+                 relativeToChangelogFile="true"
+                 splitStatements="false"
+                 stripComments="true"/>
+    </changeSet>
+
+    <changeSet failOnError="false" author="Emeka Ilozue" id="1649865054498-2-sync">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <sequenceExists sequenceName="remote_access_token_id_seq"></sequenceExists>
+            </not>
+        </preConditions>
+        <createSequence sequenceName="remote_access_token_id_seq"/>
+    </changeSet>
+
+    <changeSet failOnError="false" author="Emeka Ilozue" id="1649865054498-3-sync">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <sequenceExists sequenceName="sync_history_id_seq"></sequenceExists>
+            </not>
+        </preConditions>
+        <createSequence sequenceName="sync_history_id_seq"/>
+    </changeSet>
+
+    <changeSet failOnError="false" author="Emeka Ilozue" id="1649865054498-4-sync">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <sequenceExists sequenceName="sync_queue_id_seq"></sequenceExists>
+            </not>
+        </preConditions>
+        <createSequence sequenceName="sync_queue_id_seq"/>
+    </changeSet>
+
+    <changeSet failOnError="false" author="Emeka Ilozue" id="1649865054498-5-sync">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="remote_access_token"/>
+            </not>
+        </preConditions>
+        <createTable tableName="remote_access_token">
+            <column autoIncrement="true" name="id" type="BIGSERIAL">
+                <constraints primaryKey="true" primaryKeyName="remote_access_token_pkey"/>
+            </column>
+            <column name="password" type="VARCHAR(255)"/>
+            <column name="token" type="VARCHAR(10485760)"/>
+            <column name="url" type="VARCHAR(255)"/>
+            <column name="username" type="VARCHAR(255)"/>
+            <column name="application_user_id" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet failOnError="false" author="Emeka Ilozue" id="1649865054498-6-sync">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="sync_history"/>
+            </not>
+        </preConditions>
+        <createTable tableName="sync_history">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="sync_history_pkey"/>
+            </column>
+            <column name="date_last_sync" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="organisation_unit_id" type="BIGINT"/>
+            <column name="table_name" type="VARCHAR(255)"/>
+            <column name="processed" type="INT"/>
+            <column name="sync_queue_id" type="BIGINT"/>
+            <column name="remote_access_token_id" type="BIGINT"/>
+            <column name="upload_size" type="INT"/>
+            <column name="processed_size" type="INT"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet failOnError="false" author="Emeka Ilozue" id="1649865054498-7-sync">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="sync_queue"/>
+            </not>
+        </preConditions>
+        <createTable tableName="sync_queue">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="sync_queue_pkey"/>
+            </column>
+            <column name="date_created" type="TIMESTAMP WITHOUT TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="file_name" type="VARCHAR(255)"/>
+            <column name="organisation_unit_id" type="BIGINT"/>
+            <column name="processed" type="INT"/>
+            <column name="table_name" type="VARCHAR(255)"/>
+            <column name="upload_size" type="INT"/>
+            <column name="processed_size" type="INT"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet failOnError="false" author="Emeka Ilozue" id="1649865054498-8-sync">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <foreignKeyConstraintExists foreignKeyName="remote_access_token_id_fk"/>
+            </not>
+        </preConditions>
+        <addForeignKeyConstraint baseColumnNames="remote_access_token_id" baseTableName="sync_history" constraintName="remote_access_token_id_fk" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="remote_access_token"/>
+    </changeSet>
+
+    <changeSet failOnError="false" author="Emeka Ilozue" id="1649865054498-10-sync">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">
+                SELECT COUNT(*)
+                FROM pg_attribute
+                WHERE attrelid = (SELECT oid FROM pg_class WHERE relname = 'form_data')
+                AND attname = 'uuid';
+            </sqlCheck>
+        </preConditions>
+        <addColumn tableName="form_data" >
+            <column name="uuid" afterColumn="organisation_unit_id" type="varchar(255)"/>
+        </addColumn>
+    </changeSet>
+</databaseChangeLog>
