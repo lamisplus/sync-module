@@ -25,7 +25,7 @@ public class HttpConnectionManager {
         }
     }
 
-    public String post(byte[] bytes, String url) throws IOException {
+    public String post(byte[] bytes, String token, String url) throws IOException {
         RequestBody body = RequestBody.create(bytes, MediaType.parse("application/json; charset=utf-8"));
         String hash = Hashing.sha256().hashBytes(bytes).toString();
 
@@ -34,6 +34,7 @@ public class HttpConnectionManager {
                 .addHeader("User-Agent", "OkHttp Bot")
                 .addHeader("Hash-Value", hash)
                 .addHeader("token", "lamisplus")
+                .addHeader("Authorization", token)
                 .post(body)
                 .build();
 

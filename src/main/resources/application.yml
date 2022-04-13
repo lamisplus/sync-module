@@ -97,7 +97,7 @@ resilience4j.thread-pool-bulkhead:
 spring:
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5432/lamisplus
+    url: jdbc:postgresql://localhost:5432/sync
     password: emeka
     username: postgres
 

@@ -5,7 +5,7 @@ public enum Tables{
     visit,
     encounter,
     form_data,
-    appointment
+    //appointment
     //biometric
 
 };

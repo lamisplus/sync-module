@@ -19,4 +19,5 @@ public class UploadDTO {
 
     //@NotNull(message = "remoteAccessTokenId is mandatory")
     private Long remoteAccessTokenId;
+
 }

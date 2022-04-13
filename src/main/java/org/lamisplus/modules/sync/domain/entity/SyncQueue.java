@@ -41,6 +41,10 @@ public class SyncQueue implements Serializable {
     private Integer processed;
 
     @Basic
-    @Column(name = "upload_size")
+    @Column(name = "received_size")
+    private Integer receivedSize;
+
+    @Basic
+    @Column(name = "processed_size")
     private Integer processedSize;
 }

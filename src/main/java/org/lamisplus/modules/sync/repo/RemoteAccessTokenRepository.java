@@ -1,6 +1,7 @@
 package org.lamisplus.modules.sync.repo;
 
 import lombok.RequiredArgsConstructor;
+import org.lamisplus.modules.base.domain.entity.User;
 import org.lamisplus.modules.sync.domain.entity.RemoteAccessToken;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -50,9 +51,17 @@ public class RemoteAccessTokenRepository {
                 remoteAccessToken.getUsername(), remoteAccessToken.getApplicationUserId(), remoteAccessToken.getId());
     }
 
+
     public List<RemoteAccessToken> findAllByApplicationUserId(Long applicationUserId) {
         return jdbcTemplate.query("SELECT * FROM remote_access_token WHERE application_user_id=?",
                 new BeanPropertyRowMapper<RemoteAccessToken>(RemoteAccessToken.class), applicationUserId);
 
     }
+
+    public int save(User user) {
+        return jdbcTemplate.update("INSERT INTO user (user_name, password, archived, current_organisation_unit_id, first_name, last_name) VALUES (?, ?, ?, ?, ?, ?)",
+                user.getUserName(), user.getPassword(), user.getArchived(), user.getCurrentOrganisationUnitId(), user.getFirstName(), user.getLastName());
+
+    }
+
 }

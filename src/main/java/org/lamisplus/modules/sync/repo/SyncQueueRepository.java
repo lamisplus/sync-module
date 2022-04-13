@@ -25,7 +25,7 @@ public class SyncQueueRepository {
     }
 
     public List<SyncQueue> getAllSyncQueueByFacilitiesNotProcessed() {
-        return jdbcTemplate.query("SELECT * from sync_queue sq where  sq.organisation_unit_id in (select distinct ou.organisation_unit_id from sync_queue ou where ou.processed = 0)", new BeanPropertyRowMapper<SyncQueue>(SyncQueue.class));
+        return jdbcTemplate.query("SELECT * from sync_queue sq where  sq.organisation_unit_id in (select distinct ou.organisation_unit_id from sync_queue ou where ou.processed = 0) order by sq.id asc", new BeanPropertyRowMapper<SyncQueue>(SyncQueue.class));
     }
 
     public List<SyncQueue> getAllSyncQueueByFacilityNotProcessed(Long facilityId) {

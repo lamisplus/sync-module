@@ -36,8 +36,7 @@ public class SyncHistoryService {
     }
 
     public SyncHistory getSyncHistory(String table, Long facilityId){
-        return syncHistoryRepository.findByTableNameAndOrganisationUnitId(table, facilityId)
-                .orElseThrow(()-> new EntityNotFoundException(SyncHistory.class, "Table & Facility", table + " & " + facilityId));
+        return syncHistoryRepository.findByTableNameAndOrganisationUnitId(table, facilityId).orElseGet(SyncHistory::new);
     }
 
     public List<SyncHistory> getSyncHistories() {

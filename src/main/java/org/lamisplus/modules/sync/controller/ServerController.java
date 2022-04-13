@@ -2,16 +2,20 @@ package org.lamisplus.modules.sync.controller;
 
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.lamisplus.modules.base.controller.apierror.RecordExistException;
 import org.lamisplus.modules.sync.domain.entity.RemoteAccessToken;
 import org.lamisplus.modules.sync.domain.entity.SyncQueue;
 import org.lamisplus.modules.sync.service.RemoteAccessTokenService;
 import org.lamisplus.modules.sync.service.SyncQueueService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.Optional;
 
 @Slf4j
 @RestController
@@ -35,10 +39,6 @@ public class ServerController {
         return ResponseEntity.ok(syncQueue);
     }
 
-    public ResponseEntity<String> getReceiverDefault(Exception e) {
-        return ResponseEntity.badRequest().body(e.getMessage());
-    }
-
     @RequestMapping(value = "/sync-queue/{id}",
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
@@ -49,8 +49,12 @@ public class ServerController {
     @RequestMapping(value = "/server/remote-access-token",
             method = RequestMethod.POST,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<RemoteAccessToken> save(@Valid @RequestBody byte[] bytes) {
+    public ResponseEntity<?> save(@Valid @RequestBody byte[] bytes) throws Exception {
 
-        return ResponseEntity.ok(remoteAccessTokenService.save(bytes));
+        try {
+            return ResponseEntity.ok(remoteAccessTokenService.save(bytes));
+        }catch (Exception e){
+            return new ResponseEntity<>("Error!, Please try again", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 }
