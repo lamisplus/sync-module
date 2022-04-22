@@ -1,38 +1,24 @@
 package org.lamisplus.modules.sync.controller;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
-import io.github.resilience4j.retry.annotation.Retry;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.lamisplus.modules.base.controller.apierror.EntityNotFoundException;
 import org.lamisplus.modules.base.domain.entity.OrganisationUnit;
 import org.lamisplus.modules.base.repository.OrganisationUnitRepository;
 import org.lamisplus.modules.sync.domain.dto.RemoteUrlDTO;
 import org.lamisplus.modules.sync.domain.dto.UploadDTO;
 import org.lamisplus.modules.sync.domain.entity.RemoteAccessToken;
 import org.lamisplus.modules.sync.domain.entity.SyncHistory;
-import org.lamisplus.modules.sync.domain.entity.SyncQueue;
-import org.lamisplus.modules.sync.domain.entity.Tables;
-import org.lamisplus.modules.sync.repo.RemoteAccessTokenRepository;
 //import org.lamisplus.modules.sync.service.ObjectSerializer;
-import org.lamisplus.modules.sync.service.ObjectSerializer;
-import org.lamisplus.modules.sync.service.RemoteAccessTokenService;
+import org.lamisplus.modules.sync.service.ClientRemoteAccessTokenService;
 import org.lamisplus.modules.sync.service.SyncClientService;
 import org.lamisplus.modules.sync.service.SyncHistoryService;
-import org.lamisplus.modules.sync.utility.HttpConnectionManager;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.time.LocalDateTime;
-import java.util.Arrays;
 import java.util.List;
 
 @Slf4j
@@ -42,7 +28,7 @@ import java.util.List;
 public class ClientController {
     private final SyncHistoryService syncHistoryService;
     private final OrganisationUnitRepository organisationUnitRepository;
-    private final RemoteAccessTokenService remoteAccessTokenService;
+    private final ClientRemoteAccessTokenService clientRemoteAccessTokenService;
     private final SyncClientService syncClientService;
 
 
@@ -80,7 +66,7 @@ public class ClientController {
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<RemoteUrlDTO>> getRemoteUrls() {
-        return ResponseEntity.ok(remoteAccessTokenService.getRemoteUrls());
+        return ResponseEntity.ok(clientRemoteAccessTokenService.getRemoteUrls());
     }
 
     @RequestMapping(value = "/remote-access-token",
@@ -88,6 +74,6 @@ public class ClientController {
             produces = MediaType.APPLICATION_JSON_VALUE)
     @SneakyThrows
     public void sendToRemoteAccessToServer(@Valid @RequestBody RemoteAccessToken remoteAccessToken) {
-        remoteAccessTokenService.sendToRemoteAccessToServer(remoteAccessToken);
+        clientRemoteAccessTokenService.sendToRemoteAccessToServer(remoteAccessToken);
     }
 }

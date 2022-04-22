@@ -44,7 +44,22 @@ public class RemoteAccessToken  implements Serializable {
     @Column(name = "application_user_id")
     private Long applicationUserId;
 
-    @Transient
-    private Long currentOrganisationUnitId;
+    @Basic
+    @Column(name = "organisation_unit_id")
+    private Long organisationUnitId;
 
+    @Basic
+    @Column(name = "pr_key")
+    private String prKey;
+
+    @Basic
+    @Column(name = "pub_key")
+    private String pubKey;
+
+    @Basic
+    @Column(name = "any_pub_key")
+    private String anyPubKey;
+
+    @Transient
+    private byte[] anyByteKey;
 }

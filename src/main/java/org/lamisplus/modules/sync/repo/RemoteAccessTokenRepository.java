@@ -40,15 +40,17 @@ public class RemoteAccessTokenRepository {
 
     public int save(RemoteAccessToken remoteAccessToken) {
         if(remoteAccessToken.getId() == null || remoteAccessToken.getId() == 0){
-            return jdbcTemplate.update("INSERT INTO remote_access_token (password, token, url, username, application_user_id) VALUES (?, ?, ?, ?, ?)",
+            return jdbcTemplate.update("INSERT INTO remote_access_token (password, token, url, username, application_user_id, organisation_unit_id, pr_key, pub_key) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
                     remoteAccessToken.getPassword(), remoteAccessToken.getToken(), remoteAccessToken.getUrl(),
-                    remoteAccessToken.getUsername(), remoteAccessToken.getApplicationUserId());
+                    remoteAccessToken.getUsername(), remoteAccessToken.getApplicationUserId(), remoteAccessToken.getOrganisationUnitId(),
+                    remoteAccessToken.getPrKey(), remoteAccessToken.getPubKey());
 
         }
-        return jdbcTemplate.update("UPDATE remote_access_token SET password=?, token=?, url=?, username=?, application_user_id=? " +
-                        "WHERE id=? ",
+        return jdbcTemplate.update("UPDATE remote_access_token SET password=?, token=?, url=?, username=?, " +
+                        "application_user_id=?, organisation_unit_id=?, pr_key=?, pub_key=? WHERE id=? ",
                 remoteAccessToken.getPassword(), remoteAccessToken.getToken(), remoteAccessToken.getUrl(),
-                remoteAccessToken.getUsername(), remoteAccessToken.getApplicationUserId(), remoteAccessToken.getId());
+                remoteAccessToken.getUsername(), remoteAccessToken.getApplicationUserId(),
+                remoteAccessToken.getOrganisationUnitId(), remoteAccessToken.getPrKey(), remoteAccessToken.getPubKey(), remoteAccessToken.getId());
     }
 
 
@@ -62,6 +64,21 @@ public class RemoteAccessTokenRepository {
         return jdbcTemplate.update("INSERT INTO user (user_name, password, archived, current_organisation_unit_id, first_name, last_name) VALUES (?, ?, ?, ?, ?, ?)",
                 user.getUserName(), user.getPassword(), user.getArchived(), user.getCurrentOrganisationUnitId(), user.getFirstName(), user.getLastName());
 
+    }
+
+    public Optional<RemoteAccessToken> findByNameAndUrlAndOrganisationUnitId(String username, String url, Long organisationUnitId) {
+        return jdbcTemplate.query("SELECT * FROM remote_access_token WHERE username = ? AND url=? AND organisation_unit_id=?",
+                new BeanPropertyRowMapper<RemoteAccessToken>(RemoteAccessToken.class), username, url, organisationUnitId).stream().findFirst();
+    }
+
+    public Optional<RemoteAccessToken> findByNameAndOrganisationUnitId(String username, Long organisationUnitId) {
+        return jdbcTemplate.query("SELECT * FROM remote_access_token WHERE username = ? AND organisation_unit_id=?",
+                new BeanPropertyRowMapper<RemoteAccessToken>(RemoteAccessToken.class), username, organisationUnitId).stream().findFirst();
+    }
+
+    public Optional<RemoteAccessToken> findWherePrivateKeyIsNull(String publicKey) {
+        return jdbcTemplate.query("SELECT * FROM remote_access_token WHERE pr_key = ?",
+                new BeanPropertyRowMapper<RemoteAccessToken>(RemoteAccessToken.class), publicKey).stream().findFirst();
     }
 
 }

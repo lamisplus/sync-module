@@ -123,4 +123,18 @@
             <column name="uuid" afterColumn="organisation_unit_id" type="varchar(255)"/>
         </addColumn>
     </changeSet>
+
+    <changeSet failOnError="false" author="Emeka Ilozue" id="1649865054498-11-sync">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">
+                SELECT COUNT(*)
+                FROM pg_attribute
+                WHERE attrelid = (SELECT oid FROM pg_class WHERE relname = 'remote_access_token')
+                AND attname = 'organisation_unit_id';
+            </sqlCheck>
+        </preConditions>
+        <addColumn tableName="remote_access_token" >
+            <column name="organisation_unit_id" afterColumn="application_user_id" type="varchar(255)"/>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>

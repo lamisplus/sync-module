@@ -57,7 +57,7 @@ public class QueueManager {
     }
 
 
-    @Scheduled(fixedDelay = 300000)
+    //@Scheduled(fixedDelay = 300000)
     public void process() throws Exception {
         List<SyncQueue> filesNotProcessed = syncQueueRepository.getAllSyncQueueByFacilitiesNotProcessed();
         log.info("available file for processing are : {}", filesNotProcessed.size());

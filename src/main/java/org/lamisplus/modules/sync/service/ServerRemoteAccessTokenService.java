@@ -1,12 +1,14 @@
 package org.lamisplus.modules.sync.service;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.SerializationUtils;
 import org.hibernate.id.UUIDGenerator;
 import org.lamisplus.modules.base.controller.AccountController;
@@ -23,52 +25,77 @@ import org.lamisplus.modules.sync.domain.dto.RemoteUrlDTO;
 import org.lamisplus.modules.sync.domain.entity.RemoteAccessToken;
 import org.lamisplus.modules.sync.domain.entity.SyncQueue;
 import org.lamisplus.modules.sync.repo.RemoteAccessTokenRepository;
-import org.lamisplus.modules.sync.utility.HttpConnectionManager;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.lamisplus.modules.sync.utility.AESUtil;
 import org.springframework.stereotype.Service;
 
+import javax.xml.bind.DatatypeConverter;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.nio.charset.StandardCharsets;
+import java.security.GeneralSecurityException;
 import java.util.Optional;
-import java.util.UUID;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class RemoteAccessTokenService {
+public class ServerRemoteAccessTokenService {
     private final RemoteAccessTokenRepository remoteAccessTokenRepository;
     private final UserService userService;
     private final UserJWTController userJWTController;
-    private final AccountController accountController;
+    private final GenerateKeys generateKeys;
+    //private final AESUtil aesUtil;
 
-
-    public RemoteAccessTokenRepository getRemoteAccessTokenRepository() {
-        return remoteAccessTokenRepository;
-    }
 
     @SneakyThrows
     public RemoteAccessToken save(byte[] bytes){
-        RemoteAccessToken remoteAccessToken = (RemoteAccessToken) SerializationUtils.deserialize(bytes);
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+        objectMapper.enable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
 
+        RemoteAccessToken remoteAccessToken = (RemoteAccessToken) SerializationUtils.deserialize(bytes);
         log.info("Username is: {}", remoteAccessToken.getUsername());
 
         Optional<RemoteAccessToken> optionalRemoteAccessToken = remoteAccessTokenRepository.findByName(remoteAccessToken.getUsername());
         optionalRemoteAccessToken.ifPresent(remoteAccessToken1 -> {
             throw new RecordExistException(RemoteAccessToken.class, "username", ""+remoteAccessToken1.getUsername());
         });
+        String key = this.generateAESKey(remoteAccessToken);
+
+        //Encrypt AESKey with client public key
+        byte[] aesKey = this.generateKeys.encrypt(key.getBytes(StandardCharsets.UTF_8), remoteAccessToken);
+        remoteAccessToken.setAnyByteKey(aesKey);
+
         this.createUserOnServer(remoteAccessToken); // save to user table on the server
 
         remoteAccessToken.setToken(this.authenticate(remoteAccessToken));
-        log.info("RemoteAccessToken: {}", remoteAccessToken);
+
+        remoteAccessToken = this.generateKeys.keyGenerateAndReturnKey(remoteAccessToken);
+
+
+        //byte[] prKeyBytes = objectMapper.writeValueAsBytes(remoteAccessToken.getPrKey());
+
+        //byte[] pubKeyBytes = objectMapper.writeValueAsBytes(remoteAccessToken.getPubKey());
+
+        //FileUtils.writeByteArrayToFile(new File("pr_key"), prKeyBytes);
+        //FileUtils.writeByteArrayToFile(new File("pub_key"), pubKeyBytes);
+
+       // prKeyBytes= FileUtils.readFileToByteArray(new File("pr_key"));
+        //pubKeyBytes = FileUtils.readFileToByteArray(new File("pub_key"));
+
+        //log.info("private is {}", objectMapper.readValue(prKeyBytes, new TypeReference<String>() {}));
+        //log.info("public is {}", objectMapper.readValue(pubKeyBytes, new TypeReference<String>() {}));
+
+
+        //log.info("RemoteAccessToken: {}", remoteAccessToken);
+
         remoteAccessTokenRepository.save(remoteAccessToken);
+        remoteAccessToken.setPrKey("x");
         remoteAccessToken.setPassword("x");
         remoteAccessToken.setStatus(0L);
+        //remoteAccessToken.setPrKey("x");
         return remoteAccessToken;
     }
 
-    @SneakyThrows
+    /*@SneakyThrows
     public void sendToRemoteAccessToServer(RemoteAccessToken remoteAccessToken) {
        String url = remoteAccessToken.getUrl().concat("/api/sync/server/remote-access-token");
        //TODO: set currentOrganisationUnit
@@ -77,8 +104,7 @@ public class RemoteAccessTokenService {
 
         try {
             byte [] byteArray = SerializationUtils.serialize(remoteAccessToken);
-            String response;
-            response = new HttpConnectionManager().post(byteArray, "lamisplus", url);
+            String response = new HttpConnectionManager().post(byteArray, "lamisplus", url);
 
 
             //For serializing the date on the sync queue
@@ -89,16 +115,20 @@ public class RemoteAccessTokenService {
             final RemoteAccessToken savedRemoteAccessToken = objectMapper.readValue(response, RemoteAccessToken.class);
             //Null the id to create a new record
             savedRemoteAccessToken.setId(null);
-            userService.getUserWithRoles().ifPresent(user -> {
-                savedRemoteAccessToken.setApplicationUserId(user.getId());
-            });
+            User user = userService.getUserWithRoles().orElse(null);
+            Long applicationUserId = 0L;
+
+            if(user != null){
+                applicationUserId = user.getId();
+            }
+            savedRemoteAccessToken.setApplicationUserId(applicationUserId);
             remoteAccessTokenRepository.save(savedRemoteAccessToken);
         }catch (Exception e){
             throw e;
         }
-    }
+    }*/
 
-    public List<RemoteUrlDTO> getRemoteUrls() {
+    /*public List<RemoteUrlDTO> getRemoteUrls() {
         List<RemoteAccessToken> remoteAccessTokens;
 
         Optional<User> optionalUser = userService.getUserWithRoles();
@@ -118,16 +148,19 @@ public class RemoteAccessTokenService {
             remoteUrlDTOS.add(remoteUrlDTO);
         });
         return remoteUrlDTOS;
-    }
+    }*/
 
 
     @SneakyThrows
-    public User createUserOnServer(RemoteAccessToken remoteAccessToken) throws Exception {
+    public User createUserOnServer(RemoteAccessToken remoteAccessToken) {
         UserDTO userDTO = new UserDTO();
         userDTO.setFirstName(remoteAccessToken.getUsername());
         userDTO.setLastName(remoteAccessToken.getUsername());
         userDTO.setUserName(remoteAccessToken.getUsername());
-        userDTO.setCurrentOrganisationUnitId(0L);
+
+        if(null != remoteAccessToken.getOrganisationUnitId())userDTO.setCurrentOrganisationUnitId(remoteAccessToken.getOrganisationUnitId());
+        else userDTO.setCurrentOrganisationUnitId(0L);
+
         return userService.registerUser(userDTO, remoteAccessToken.getPassword(), false);
     }
 
@@ -137,5 +170,12 @@ public class RemoteAccessTokenService {
         loginVM.setPassword(remoteAccessToken.getPassword());
         Long sevenDays = 168L;
         return userJWTController.authorize(loginVM, sevenDays).getBody().getIdToken();
+    }
+
+    public String generateAESKey(RemoteAccessToken remoteAccessToken) throws GeneralSecurityException, IOException {
+        return DatatypeConverter.printBase64Binary(AESUtil.getKeyFromPassword(remoteAccessToken.getPassword(), "ead60638-c065-4ea4-a17a-3a01287e4cab").getEncoded());
+        //remoteAccessToken.setPrByte(generateKeys.encrypt(key.getBytes(), remoteAccessToken));
+        //remoteAccessToken.setAnyPubKey(key);
+        //return remoteAccessToken;
     }
 }

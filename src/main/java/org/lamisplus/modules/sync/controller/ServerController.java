@@ -2,12 +2,9 @@ package org.lamisplus.modules.sync.controller;
 
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.lamisplus.modules.base.controller.apierror.RecordExistException;
-import org.lamisplus.modules.sync.domain.entity.RemoteAccessToken;
 import org.lamisplus.modules.sync.domain.entity.SyncQueue;
-import org.lamisplus.modules.sync.service.RemoteAccessTokenService;
+import org.lamisplus.modules.sync.service.ServerRemoteAccessTokenService;
 import org.lamisplus.modules.sync.service.SyncQueueService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -15,7 +12,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.Optional;
 
 @Slf4j
 @RestController
@@ -23,19 +19,20 @@ import java.util.Optional;
 @RequestMapping("api/sync")
 public class ServerController {
     private final SyncQueueService syncQueueService;
-    private final RemoteAccessTokenService remoteAccessTokenService;
+    private final ServerRemoteAccessTokenService serverRemoteAccessTokenService;
 
 
-    @PostMapping("/{table}/{facilityId}")
+    @PostMapping("/{table}/{facilityId}/{name}")
     @CircuitBreaker(name = "server2", fallbackMethod = "getReceiverDefault")
     public ResponseEntity<SyncQueue> receiver(
             @RequestBody byte[] bytes,
             @RequestHeader("Hash-Value") String hash,
             @RequestHeader("token") String token,
             @PathVariable String table,
-            @PathVariable Long facilityId) throws Exception {
+            @PathVariable Long facilityId,
+            @PathVariable String name) throws Exception {
 
-        SyncQueue syncQueue = syncQueueService.save(bytes, hash, table, facilityId);
+        SyncQueue syncQueue = syncQueueService.save(bytes, hash, table, facilityId,name);
         return ResponseEntity.ok(syncQueue);
     }
 
@@ -52,7 +49,7 @@ public class ServerController {
     public ResponseEntity<?> save(@Valid @RequestBody byte[] bytes) throws Exception {
 
         try {
-            return ResponseEntity.ok(remoteAccessTokenService.save(bytes));
+            return ResponseEntity.ok(serverRemoteAccessTokenService.save(bytes));
         }catch (Exception e){
             return new ResponseEntity<>("Error!, Please try again", HttpStatus.INTERNAL_SERVER_ERROR);
         }
