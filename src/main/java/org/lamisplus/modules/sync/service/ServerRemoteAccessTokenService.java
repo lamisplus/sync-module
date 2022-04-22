@@ -87,11 +87,11 @@ public class ServerRemoteAccessTokenService {
 
         //log.info("RemoteAccessToken: {}", remoteAccessToken);
 
+        remoteAccessToken.setPrKey(key);
         remoteAccessTokenRepository.save(remoteAccessToken);
         remoteAccessToken.setPrKey("x");
         remoteAccessToken.setPassword("x");
         remoteAccessToken.setStatus(0L);
-        //remoteAccessToken.setPrKey("x");
         return remoteAccessToken;
     }
 

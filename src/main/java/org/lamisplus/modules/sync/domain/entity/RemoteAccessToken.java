@@ -2,6 +2,7 @@ package org.lamisplus.modules.sync.domain.entity;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
@@ -62,4 +63,13 @@ public class RemoteAccessToken  implements Serializable {
 
     @Transient
     private byte[] anyByteKey;
+
+    @ManyToOne
+    @JoinColumn(name = "remote_id", referencedColumnName = "id", insertable = false, updatable = false)
+    @ToString.Exclude
+    private RemoteKey remoteKey;
+
+    @Basic
+    @Column(name = "remote_id")
+    private Long remoteId;
 }

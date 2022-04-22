@@ -156,8 +156,8 @@ public class AESUtil {
                 .decode(cipherText)));
     }
 
-    public static SecretKey getKeyFromDB(RemoteAccessToken remoteAccessToken) throws NoSuchAlgorithmException, InvalidKeySpecException {
-        byte[] keyBytes = DatatypeConverter.parseBase64Binary(remoteAccessToken.getPubKey());
+    public static SecretKey getPrivateAESKeyFromDB(RemoteAccessToken remoteAccessToken) throws NoSuchAlgorithmException, InvalidKeySpecException {
+        byte[] keyBytes = DatatypeConverter.parseBase64Binary(remoteAccessToken.getPrKey());
         SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA256");
         X509EncodedKeySpec spec = new X509EncodedKeySpec(keyBytes);
         SecretKey secret = new SecretKeySpec(factory.generateSecret(spec)
