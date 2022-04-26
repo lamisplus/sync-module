@@ -5,6 +5,7 @@ import com.foreach.across.core.AcrossModule;
 import com.foreach.across.core.context.configurer.ComponentScanConfigurer;
 import com.foreach.across.modules.hibernate.jpa.AcrossHibernateJpaModule;
 import com.foreach.across.modules.web.AcrossWebModule;
+import org.lamisplus.modules.base.BaseModule;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import springfox.documentation.builders.ApiInfoBuilder;
@@ -21,8 +22,9 @@ import java.util.List;
 @AcrossApplication(
         modules = {
                 AcrossHibernateJpaModule.NAME,
-                AcrossWebModule.NAME
-        })
+                AcrossWebModule.NAME, BaseModule.NAME
+        },
+        modulePackageClasses = {BaseModule.class})
 public class SyncModule extends AcrossModule
 {
     public final static String NAME = "SyncModule";
@@ -39,7 +41,7 @@ public class SyncModule extends AcrossModule
                 getClass().getPackage().getName() +".installers",
                 getClass().getPackage().getName() +".utility",
                 getClass().getPackage().getName() +".component",
-                getClass().getPackage().getName() +".repo"));
+                getClass().getPackage().getName() +".repo", "org.springframework.web.socket"));
     }
     @Override
     public String getName() {

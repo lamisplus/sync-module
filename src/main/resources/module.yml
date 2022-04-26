@@ -1,15 +1,6 @@
+name: Sync
+version: 1.0.0
 basePackage: org.lamisplus.modules.sync
-name: SyncModule
-store: true
-menus:
-  - icon: wc
-    disabled: false
-    name: Sync
-    state: sync
-    url: /across/resources/static/sync/index.html
-umdLocation: /across/resources/static/sync/index.html
-webModules:
-  - breadcrumb: SYNC
-    name: SyncModule
-    path: sync
-    position: 99
+menuUrl: /across/resources/static/sync/index.html
+menuName: Sync
+description: Sync Module

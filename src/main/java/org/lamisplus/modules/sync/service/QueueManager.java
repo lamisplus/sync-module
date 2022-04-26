@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.lamisplus.modules.sync.domain.entity.SyncQueue;
 import org.lamisplus.modules.sync.repo.SyncQueueRepository;
+import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -27,6 +28,8 @@ public class QueueManager {
 
     private final ObjectDeserializer objectDeserializer;
     private final SyncQueueRepository syncQueueRepository;
+    private final SimpMessageSendingOperations messagingTemplate;
+
 
     public SyncQueue queue(byte[] bytes, String table, Long facilityId) throws Exception {
 
@@ -57,7 +60,7 @@ public class QueueManager {
     }
 
 
-    //@Scheduled(fixedDelay = 300000)
+    @Scheduled(fixedDelay = 300000)
     public void process() throws Exception {
         List<SyncQueue> filesNotProcessed = syncQueueRepository.getAllSyncQueueByFacilitiesNotProcessed();
         log.info("available file for processing are : {}", filesNotProcessed.size());
@@ -70,6 +73,7 @@ public class QueueManager {
                         InputStream targetStream = new FileInputStream(file);
                         byte[] bytes = ByteStreams.toByteArray(Objects.requireNonNull(targetStream));
                         List<?> list = objectDeserializer.deserialize(bytes, syncQueue.getTableName());
+                        messagingTemplate.convertAndSend("/topic/patient-sync-size", list.size());
                         if (!list.isEmpty()) {
                             syncQueue.setProcessed(1);
                             syncQueue.setProcessedSize(list.size());

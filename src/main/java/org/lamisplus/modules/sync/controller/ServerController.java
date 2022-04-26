@@ -6,9 +6,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.lamisplus.modules.sync.domain.entity.SyncQueue;
 import org.lamisplus.modules.sync.service.ServerRemoteAccessTokenService;
 import org.lamisplus.modules.sync.service.SyncQueueService;
+import org.lamisplus.modules.sync.service.SyncServerService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -20,6 +22,9 @@ import javax.validation.Valid;
 public class ServerController {
     private final SyncQueueService syncQueueService;
     private final ServerRemoteAccessTokenService serverRemoteAccessTokenService;
+    private final SyncServerService syncServerService;
+    private final SimpMessageSendingOperations messagingTemplate;
+
 
 
     @PostMapping("/{table}/{facilityId}/{name}")
@@ -32,7 +37,8 @@ public class ServerController {
             @PathVariable Long facilityId,
             @PathVariable String name) throws Exception {
 
-        SyncQueue syncQueue = syncQueueService.save(bytes, hash, table, facilityId,name);
+        SyncQueue syncQueue = syncServerService.save(bytes, hash, table, facilityId, name);
+        messagingTemplate.convertAndSend("/topic/sync", 3);
         return ResponseEntity.ok(syncQueue);
     }
 

@@ -13,6 +13,7 @@ import org.lamisplus.modules.base.domain.entity.*;
 import org.lamisplus.modules.sync.domain.mapper.*;
 import org.lamisplus.modules.base.repository.*;
 import org.springframework.context.annotation.Bean;
+import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -35,6 +36,7 @@ public class ObjectDeserializer {
     private final EncounterMapper encounterMapper;
     private final FormDataMapper formDataMapper;
     private final AppointmentMapper appointmentMapper;
+
 
     @Bean
     public RestTemplate restTemplate() {
@@ -77,10 +79,10 @@ public class ObjectDeserializer {
         List<Patient> patients = new LinkedList<>();
         List<PatientDTO> patientDTOS = objectMapper.readValue(data, new TypeReference<List<PatientDTO>>() {
         });
+
         patientDTOS.forEach(patientDTO -> {
             Patient patient = patientMapper.toPatient(patientDTO);
             patientRepository.findByUuid(patient.getUuid()).ifPresent(value -> patient.setId(value.getId()));
-            System.out.println();
             patients.add(patient);
         });
         List<Patient> savedPatients = patientRepository.saveAll(patients);

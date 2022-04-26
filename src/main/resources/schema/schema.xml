@@ -134,7 +134,75 @@
             </sqlCheck>
         </preConditions>
         <addColumn tableName="remote_access_token" >
-            <column name="organisation_unit_id" afterColumn="application_user_id" type="varchar(255)"/>
+            <column name="organisation_unit_id" afterColumn="application_user_id" type="BIGINT"/>
         </addColumn>
+    </changeSet>
+
+    <changeSet failOnError="false" author="Emeka" id="1649865054498-12-sync">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="remote_key"/>
+            </not>
+        </preConditions>
+        <sql>
+            CREATE TABLE remote_key
+            (
+            id bigint NOT NULL GENERATED ALWAYS AS IDENTITY ( INCREMENT 1 START 1 MINVALUE 1 MAXVALUE 9223372036854775807 CACHE 1 ),
+            key character varying,
+            uuid character varying,
+            CONSTRAINT remote_key_pkey PRIMARY KEY (id)
+            )
+        </sql>
+    </changeSet>
+
+    <changeSet failOnError="false" author="Emeka Ilozue" id="1649865054498-13-sync">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">
+                SELECT COUNT(*)
+                FROM pg_attribute
+                WHERE attrelid = (SELECT oid FROM pg_class WHERE relname = 'remote_access_token')
+                AND attname = 'remote_id';
+            </sqlCheck>
+        </preConditions>
+        <addColumn tableName="remote_access_token" >
+            <column name="remote_id" afterColumn="application_user_id" type="BIGINT"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet failOnError="false" author="Emeka Ilozue" id="1649865054498-14-sync">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <foreignKeyConstraintExists foreignKeyName="remote_id_fk" />
+            </not>
+        </preConditions>
+        <sql>
+            ALTER TABLE remote_access_token
+            ADD CONSTRAINT remote_id_fk FOREIGN KEY (remote_id)
+            REFERENCES remote_key (id) MATCH SIMPLE
+            ON UPDATE NO ACTION
+            ON DELETE NO ACTION
+            NOT VALID;
+        </sql>
+    </changeSet>
+
+    <changeSet failOnError="false" author="Emeka Ilozue" id="1649865054498-15-sync">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">
+                SELECT COUNT(*)
+                FROM pg_attribute
+                WHERE attrelid = (SELECT oid FROM pg_class WHERE relname = 'remote_access_token')
+                AND attname = 'pr_key';
+            </sqlCheck>
+        </preConditions>
+        <sql>
+            ALTER TABLE remote_access_token
+            ALTER COLUMN token TYPE character varying(10485760);
+
+            ALTER TABLE remote_access_token
+            ADD COLUMN pr_key character varying(10485760);
+
+            ALTER TABLE remote_access_token
+            ADD COLUMN pub_key character varying(10485760);
+        </sql>
     </changeSet>
 </databaseChangeLog>

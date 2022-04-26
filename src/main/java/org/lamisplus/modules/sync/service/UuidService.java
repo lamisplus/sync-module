@@ -75,7 +75,7 @@ public class UuidService {
         }
     }
 
-    @Scheduled(fixedDelay = 50000)
+    @Scheduled(fixedDelay = 30000)
     public void getUUID(){
         for (Tables table : Tables.values()) {
             addUuid(table.toString());

@@ -23,7 +23,7 @@ import java.io.Serializable;
 import java.security.*;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.KeySpec;
-import java.security.spec.X509EncodedKeySpec;
+import java.util.Arrays;
 import java.util.Base64;
 
 @Component
@@ -158,11 +158,7 @@ public class AESUtil {
 
     public static SecretKey getPrivateAESKeyFromDB(RemoteAccessToken remoteAccessToken) throws NoSuchAlgorithmException, InvalidKeySpecException {
         byte[] keyBytes = DatatypeConverter.parseBase64Binary(remoteAccessToken.getPrKey());
-        SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA256");
-        X509EncodedKeySpec spec = new X509EncodedKeySpec(keyBytes);
-        SecretKey secret = new SecretKeySpec(factory.generateSecret(spec)
-                .getEncoded(), "AES");
+        SecretKey secret = new SecretKeySpec(Arrays.copyOf(keyBytes, 16), "AES");
         return secret;
     }
-
 }

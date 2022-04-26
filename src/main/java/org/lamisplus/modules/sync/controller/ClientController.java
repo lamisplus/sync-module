@@ -9,7 +9,6 @@ import org.lamisplus.modules.sync.domain.dto.RemoteUrlDTO;
 import org.lamisplus.modules.sync.domain.dto.UploadDTO;
 import org.lamisplus.modules.sync.domain.entity.RemoteAccessToken;
 import org.lamisplus.modules.sync.domain.entity.SyncHistory;
-//import org.lamisplus.modules.sync.service.ObjectSerializer;
 import org.lamisplus.modules.sync.service.ClientRemoteAccessTokenService;
 import org.lamisplus.modules.sync.service.SyncClientService;
 import org.lamisplus.modules.sync.service.SyncHistoryService;
@@ -42,7 +41,7 @@ public class ClientController {
             syncClientService.sender(uploadDTO);
             return ResponseEntity.status(HttpStatus.OK).build();
         } catch(final Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
 

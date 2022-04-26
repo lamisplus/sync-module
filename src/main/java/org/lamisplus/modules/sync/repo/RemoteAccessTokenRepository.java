@@ -34,6 +34,11 @@ public class RemoteAccessTokenRepository {
                 new BeanPropertyRowMapper<RemoteAccessToken>(RemoteAccessToken.class), url).stream().findFirst();
     }
 
+    public Optional<RemoteAccessToken> findByUrlAndFacilityId(String url, Long organisationUnit) {
+        return jdbcTemplate.query("SELECT * FROM remote_access_token WHERE url=? And organisation_unit_id=?",
+                new BeanPropertyRowMapper<RemoteAccessToken>(RemoteAccessToken.class), url, organisationUnit).stream().findFirst();
+    }
+
     public int deleteById(Long id) {
         return jdbcTemplate.update("DELETE FROM remote_access_token WHERE id=?", id);
     }
@@ -72,7 +77,7 @@ public class RemoteAccessTokenRepository {
     }
 
     public Optional<RemoteAccessToken> findByNameAndOrganisationUnitId(String username, Long organisationUnitId) {
-        return jdbcTemplate.query("SELECT * FROM remote_access_token WHERE username = ? AND organisation_unit_id=?",
+        return jdbcTemplate.query("SELECT * FROM remote_access_token WHERE username = ? AND organisation_unit_id=? order by id desc limit 1",
                 new BeanPropertyRowMapper<RemoteAccessToken>(RemoteAccessToken.class), username, organisationUnitId).stream().findFirst();
     }
 

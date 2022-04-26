@@ -50,7 +50,7 @@ public class SyncApplication extends AcrossModule {
                 getClass().getPackage().getName() +".installers",
                 getClass().getPackage().getName() +".utility",
                 getClass().getPackage().getName() +".component",
-                getClass().getPackage().getName() +".repo"));
+                getClass().getPackage().getName() +".repo", "org.springframework.web.socket"));
     }
 
     public String getName() {

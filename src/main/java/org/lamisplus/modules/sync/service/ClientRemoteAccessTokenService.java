@@ -7,10 +7,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.SerializationUtils;
-import org.lamisplus.modules.base.controller.UserJWTController;
-import org.lamisplus.modules.base.controller.apierror.RecordExistException;
-import org.lamisplus.modules.base.controller.vm.LoginVM;
-import org.lamisplus.modules.base.domain.dto.UserDTO;
 import org.lamisplus.modules.base.domain.entity.User;
 import org.lamisplus.modules.base.service.UserService;
 import org.lamisplus.modules.sync.domain.dto.RemoteUrlDTO;
@@ -18,19 +14,15 @@ import org.lamisplus.modules.sync.domain.entity.RemoteAccessToken;
 import org.lamisplus.modules.sync.domain.entity.RemoteKey;
 import org.lamisplus.modules.sync.repo.RemoteAccessTokenRepository;
 import org.lamisplus.modules.sync.repo.RemoteKeyRepository;
-import org.lamisplus.modules.sync.utility.AESUtil;
 import org.lamisplus.modules.sync.utility.HttpConnectionManager;
+import org.lamisplus.modules.sync.utility.RSAUtils;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.Cipher;
-import javax.crypto.NoSuchPaddingException;
-import javax.xml.bind.DatatypeConverter;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.security.GeneralSecurityException;
-import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
-import java.security.PublicKey;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -43,26 +35,23 @@ public class ClientRemoteAccessTokenService {
     private final RemoteAccessTokenRepository remoteAccessTokenRepository;
     private final RemoteKeyRepository remoteKeyRepository;
     private final UserService userService;
-    //private final UserJWTController userJWTController;
-    private final GenerateKeys generateKeys;
-    //private final AESUtil aesUtil;
+    private final RSAUtils rsaUtils;
 
 
-    public RemoteAccessTokenRepository getRemoteAccessTokenRepository() {
-        return remoteAccessTokenRepository;
-    }
 
-
-    @SneakyThrows
-    public void sendToRemoteAccessToServer(RemoteAccessToken remoteAccessToken) {
-        remoteAccessToken = generateKeys.keyGenerateAndReturnKey(remoteAccessToken);
+    public void sendToRemoteAccessToServer(RemoteAccessToken clientRemoteAccessToken) throws IOException, GeneralSecurityException {
+        final RemoteAccessToken remoteAccessToken = this.rsaUtils.keyGenerateAndReturnKey(clientRemoteAccessToken);
         String uuid = UUID.randomUUID().toString();
 
         RemoteKey remoteKey = new RemoteKey();
         remoteKey.setId(null);
         remoteKey.setKey(remoteAccessToken.getPrKey());
         remoteKey.setUuid(uuid);
+
         remoteKeyRepository.save(remoteKey);
+        userService.getUserWithRoles().ifPresent(user -> {
+            remoteAccessToken.setOrganisationUnitId(user.getCurrentOrganisationUnitId());
+        });
 
         remoteAccessToken.setRemoteId(remoteKeyRepository.findByUUID(uuid).get().getId());
 
@@ -71,12 +60,10 @@ public class ClientRemoteAccessTokenService {
        String url = remoteAccessToken.getUrl().concat("/api/sync/server/remote-access-token");
        //TODO: set currentOrganisationUnit
         log.info("url is {}", url);
-        //String remoteAccessTokenString = String.valueOf(remoteAccessToken);
 
         try {
             byte [] byteArray = SerializationUtils.serialize(remoteAccessToken);
             String response = new HttpConnectionManager().post(byteArray, "lamisplus", url);
-
 
             //For serializing the date on the sync queue
             ObjectMapper objectMapper = new ObjectMapper();
@@ -86,13 +73,14 @@ public class ClientRemoteAccessTokenService {
             final RemoteAccessToken savedRemoteAccessToken = objectMapper.readValue(response, RemoteAccessToken.class);
             //Null the id to create a new record
             savedRemoteAccessToken.setId(null);
+
             User user = userService.getUserWithRoles().orElse(null);
             Long applicationUserId = 0L;
-
             if(user != null){
                 applicationUserId = user.getId();
             }
             savedRemoteAccessToken.setApplicationUserId(applicationUserId);
+            //Key things
             String pubKey = remoteKeyRepository.findById(savedRemoteAccessToken.getRemoteId()).get().getKey();
             remoteAccessToken.setPrKey(pubKey);
             String aesKey = this.decryptWithPrivateKey(savedRemoteAccessToken.getAnyByteKey(), remoteAccessToken);
@@ -126,15 +114,8 @@ public class ClientRemoteAccessTokenService {
         return remoteUrlDTOS;
     }
 
-
-    /*public RemoteAccessToken sendAndSaveKey(RemoteAccessToken remoteAccessToken) throws GeneralSecurityException, IOException {
-        String key = DatatypeConverter.printBase64Binary(AESUtil.getKeyFromPassword(remoteAccessToken.getPassword(), "ead60638-c065-4ea4-a17a-3a01287e4cab").getEncoded());
-        remoteAccessToken.setPrByte(generateKeys.encrypt(key.getBytes(), remoteAccessToken));
-        return remoteAccessToken;
-    }*/
-
     private String decryptWithPrivateKey(byte[] encryptedMessageBytes, RemoteAccessToken remoteAccessToken) throws GeneralSecurityException, IOException {
-        PrivateKey privateKey = this.generateKeys.readPrivateKey(remoteAccessToken);
+        PrivateKey privateKey = this.rsaUtils.readPrivateKey(remoteAccessToken);
         Cipher decryptCipher = Cipher.getInstance("RSA");
         decryptCipher.init(Cipher.DECRYPT_MODE, privateKey);
         byte[] decryptedMessageBytes = decryptCipher.doFinal(encryptedMessageBytes);
