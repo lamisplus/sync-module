@@ -28,7 +28,6 @@ public class QueueManager {
 
     private final ObjectDeserializer objectDeserializer;
     private final SyncQueueRepository syncQueueRepository;
-    private final SimpMessageSendingOperations messagingTemplate;
 
 
     public SyncQueue queue(byte[] bytes, String table, Long facilityId) throws Exception {
@@ -73,13 +72,12 @@ public class QueueManager {
                         InputStream targetStream = new FileInputStream(file);
                         byte[] bytes = ByteStreams.toByteArray(Objects.requireNonNull(targetStream));
                         List<?> list = objectDeserializer.deserialize(bytes, syncQueue.getTableName());
-                        messagingTemplate.convertAndSend("/topic/patient-sync-size", list.size());
                         if (!list.isEmpty()) {
                             syncQueue.setProcessed(1);
                             syncQueue.setProcessedSize(list.size());
                             syncQueueRepository.save(syncQueue);
                             FileUtils.deleteQuietly(file);
-                            log.info("deleting file : {}", file.getName());
+                            //log.info("deleting file : {}", file.getName());
                         }
                     } catch (Exception e) {
                         e.printStackTrace();

@@ -7,8 +7,11 @@ import com.foreach.across.modules.hibernate.jpa.AcrossHibernateJpaModule;
 import com.foreach.across.modules.web.AcrossWebModule;
 import lombok.extern.slf4j.Slf4j;
 import org.lamisplus.modules.base.BaseModule;
+import org.springframework.beans.factory.config.YamlPropertiesFactoryBean;
 import org.springframework.boot.SpringApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.PathSelectors;
@@ -19,6 +22,7 @@ import springfox.documentation.spi.service.contexts.SecurityContext;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
+import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 
@@ -39,6 +43,9 @@ public class SyncApplication extends AcrossModule {
 
     public static final String NAME = "SyncModule";
 
+    public static String modulePath = System.getProperty("user.dir");
+
+
     public SyncApplication() {
         super();
         addApplicationContextConfigurer(new ComponentScanConfigurer(
@@ -50,7 +57,7 @@ public class SyncApplication extends AcrossModule {
                 getClass().getPackage().getName() +".installers",
                 getClass().getPackage().getName() +".utility",
                 getClass().getPackage().getName() +".component",
-                getClass().getPackage().getName() +".repo", "org.springframework.web.socket"));
+                getClass().getPackage().getName() +".repo"));
     }
 
     public String getName() {
@@ -112,5 +119,15 @@ public class SyncApplication extends AcrossModule {
         return new ApiKey("JWT", "Authorization", "header");
     }
 
+    @Bean
+    //Reads database properties from the config.yml
+    public static PropertySourcesPlaceholderConfigurer properties() {
+        PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer = new PropertySourcesPlaceholderConfigurer();
+        YamlPropertiesFactoryBean yaml = new YamlPropertiesFactoryBean();
+        yaml.setResources(new FileSystemResource(modulePath + File.separator +"config.yml"));
+        propertySourcesPlaceholderConfigurer.setProperties(yaml.getObject());
+        propertySourcesPlaceholderConfigurer.setIgnoreResourceNotFound(true);
+        return propertySourcesPlaceholderConfigurer;
+    }
 
 }

@@ -23,7 +23,6 @@ public class ServerController {
     private final SyncQueueService syncQueueService;
     private final ServerRemoteAccessTokenService serverRemoteAccessTokenService;
     private final SyncServerService syncServerService;
-    private final SimpMessageSendingOperations messagingTemplate;
 
 
 
@@ -38,7 +37,6 @@ public class ServerController {
             @PathVariable String name) throws Exception {
 
         SyncQueue syncQueue = syncServerService.save(bytes, hash, table, facilityId, name);
-        messagingTemplate.convertAndSend("/topic/sync", 3);
         return ResponseEntity.ok(syncQueue);
     }
 
