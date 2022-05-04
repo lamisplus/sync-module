@@ -1,4 +1,4 @@
-package org.lamisplus.modules.sync.config;
+package org.lamisplus.modules.sync.configurer;
 
 import com.foreach.across.core.annotations.ModuleConfiguration;
 import com.foreach.across.modules.hibernate.provider.HibernatePackageConfigurer;
@@ -11,7 +11,7 @@ import org.springframework.boot.autoconfigure.domain.EntityScan;
 @ModuleConfiguration("SyncJpaModule")
 @EntityScan(basePackageClasses = SyncDomain.class)
 public class SyncEntityScanConfiguration implements HibernatePackageConfigurer {
-    private static final Logger log = LoggerFactory.getLogger(org.lamisplus.modules.sync.config.SyncEntityScanConfiguration.class);
+    private static final Logger log = LoggerFactory.getLogger(SyncEntityScanConfiguration.class);
 
     public SyncEntityScanConfiguration() {
     }

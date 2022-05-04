@@ -1,4 +1,4 @@
-package org.lamisplus.modules.sync.controller;
+package org.lamisplus.modules.sync.configurer;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

@@ -1,4 +1,4 @@
-package org.lamisplus.modules.sync.config;
+package org.lamisplus.modules.sync.configurer;
 
 
 import com.foreach.across.modules.hibernate.jpa.repositories.config.EnableAcrossJpaRepositories;
