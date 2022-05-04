@@ -94,12 +94,6 @@ resilience4j.thread-pool-bulkhead:
       maxThreadPoolSize: 1
       coreThreadPoolSize: 1
       queueCapacity: 12
-spring:
-  datasource:
-    driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5432/lamis3-plus-liquibase-test
-    password: emeka
-    username: postgres
 
   jpa:
     database: POSTGRESQL
@@ -119,3 +113,10 @@ jwt:
   # Token is valid 12 hours
   token-validity-in-milli-seconds: 43200000
   token-validity-in-milli-seconds-for-remember-me: 43200000
+
+sync:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/lamis3-plus-liquibase-test
+    password: emeka
+    username: postgres

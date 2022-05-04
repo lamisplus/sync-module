@@ -2,14 +2,14 @@ package org.lamisplus.modules.sync.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.lamisplus.modules.databaseentities.domain.entity.SyncQueue;
-import org.lamisplus.modules.databaseentities.repository.SyncQueueRepository;
+import org.lamisplus.modules.sync.domain.entity.SyncQueue;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+import org.lamisplus.modules.sync.repository.SyncQueueRepository;
 
 import javax.validation.Valid;
 import java.util.List;
