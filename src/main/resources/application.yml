@@ -44,7 +44,7 @@ server:
     mime-types: text/html,text/xml,text/plain,text/css,text/javascript,application/javascript,application/json
   http2:
     enabled: true
-  port: 8084
+  port: 8081
 
   tomcat:
     uri-encoding: UTF-8
@@ -94,7 +94,12 @@ resilience4j.thread-pool-bulkhead:
       maxThreadPoolSize: 1
       coreThreadPoolSize: 1
       queueCapacity: 12
-
+sync:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    password: emeka
+    url: jdbc:postgresql://localhost:5432/lamis3-plus-liquibase-test
+    username: postgres
   jpa:
     database: POSTGRESQL
     show-sql: true
@@ -113,10 +118,3 @@ jwt:
   # Token is valid 12 hours
   token-validity-in-milli-seconds: 43200000
   token-validity-in-milli-seconds-for-remember-me: 43200000
-
-sync:
-  datasource:
-    driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5432/lamis3-plus-liquibase-test
-    password: emeka
-    username: postgres

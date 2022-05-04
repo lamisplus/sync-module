@@ -1,0 +1,5 @@
+spring:
+  datasource:
+    username: postgres
+    password: emeka
+    url: jdbc:postgresql://localhost:5432/lamis3-plus-liquibase-test

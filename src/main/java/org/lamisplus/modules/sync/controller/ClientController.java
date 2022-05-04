@@ -26,7 +26,13 @@ public class ClientController {
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<SyncQueue>> getAllSyncQueue() {
-        return ResponseEntity.ok(syncQueueRepository.findAll());
+        try {
+            List<SyncQueue> syncQueues = syncQueueRepository.findAll();
+            return ResponseEntity.ok(syncQueues);
+        }catch (Exception e){
+            e.printStackTrace();
+            throw e;
+        }
     }
 
     @RequestMapping(value = "/sync-queue",

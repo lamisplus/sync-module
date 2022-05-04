@@ -24,6 +24,7 @@ public class ApplicationInitializedListener {
     @Async
     public void onApplicationEvent(ServletWebServerInitializedEvent event) {
         log.info("Starting lamisplus...");
+        log.info("Queue is {}",syncQueueRepository.findAll());
 
         int port = event.getApplicationContext().getWebServer().getPort();
 
