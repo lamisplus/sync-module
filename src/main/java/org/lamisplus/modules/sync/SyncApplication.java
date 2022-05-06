@@ -45,24 +45,22 @@ import java.util.List;
 @EnableScheduling
 @AcrossApplication(
         modules = {
-                AcrossWebModule.NAME
-        },
-        excludeAutoConfigurations = {DataSourceAutoConfiguration.class,
-                HibernateJpaAutoConfiguration.class,
-                DataSourceTransactionManagerAutoConfiguration.class } )
+                AcrossWebModule.NAME,
+                AcrossHibernateJpaModule.NAME
+        })
 @Slf4j
 @EnableSwagger2
 public class SyncApplication extends AcrossModule {
 
-    public static String modulePath = System.getProperty("user.dir");
-    @Value("${sync.datasource.driver-class-name}")
+    /*public static String modulePath = System.getProperty("user.dir");
+    @Value("${modules.driver-class-name}")
     private String driverClassName;
-    @Value("${sync.datasource.url}")
+    @Value("${modules.url}")
     private String url;
-    @Value("${sync.datasource.username}")
+    @Value("${modules.username}")
     private String username;
-    @Value("${sync.datasource.password}")
-    private String password;
+    @Value("${modules.password}")
+    private String password;*/
 
 
     public static void main(String[] args) {
@@ -145,81 +143,4 @@ public class SyncApplication extends AcrossModule {
     private ApiKey apiKey() {
         return new ApiKey("JWT", "Authorization", "header");
     }
-
-
-    //runtime JPA module and datasource
-    @Bean
-    @Primary
-    @ConfigurationProperties("org.lamisplus.modules.sync")
-    public DataSourceProperties syncDataSourceProperties() {
-        return new DataSourceProperties();
-    }
-
-    @Bean
-    @ConfigurationProperties("org.lamisplus.modules.sync")
-    public DataSource syncDataSource() {
-        return syncDataSourceProperties().initializeDataSourceBuilder()
-                .driverClassName(driverClassName)
-                .password(password)
-                .url(url)
-                .username(username).build();
-    }
-
-    @Bean(name = "syncJpaEntityManagerFactory")
-    public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
-        LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
-        em.setDataSource(syncDataSource());
-        em.setPackagesToScan(new String[]{"org.lamisplus.modules.sync.domain.entity"});
-        em.setPersistenceUnitName("sync");
-        JpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
-        em.setJpaVendorAdapter(vendorAdapter);
-        //em.setJpaProperties();
-
-        return em;
-    }
-
-    @Bean(name = "syncJpaTransactionManager")
-    public PlatformTransactionManager transactionManager(@Qualifier(value = "syncJpaEntityManagerFactory") EntityManagerFactory syncJpaEntityManagerFactory) {
-        JpaTransactionManager transactionManager = new JpaTransactionManager();
-        transactionManager.setEntityManagerFactory(syncJpaEntityManagerFactory);
-
-        return transactionManager;
-    }
-
-    @Bean(name = "syncJpaExceptionTranslation")
-    public PersistenceExceptionTranslationPostProcessor exceptionTranslation() {
-        return new PersistenceExceptionTranslationPostProcessor();
-    }
-
-    @Bean
-    public AcrossHibernateJpaModule syncJpaModule() {
-        return AcrossHibernateJpaModule.builder().prefix( "sync" ).build();
-    }
-
-    /*@Bean
-    public DataSource syncDataSource() {
-        DriverManagerDataSource dataSource = new DriverManagerDataSource();
-        dataSource.setUsername("postgres");
-        dataSource.setUrl("jdbc:postgresql://localhost:5432/lamis3-plus-liquibase-test");
-        dataSource.setPassword("emeka");
-        dataSource.setDriverClassName("org.postgresql.Driver");
-        return dataSource;
-    }
-
-    @Bean
-    public AcrossHibernateJpaModule syncJpaModule() {
-        return AcrossHibernateJpaModule.builder().prefix( "sync" ).build();
-    }*/
-
-    /*@Bean
-    //Reads database properties from the config.yml
-    public static PropertySourcesPlaceholderConfigurer properties() {
-        PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer = new PropertySourcesPlaceholderConfigurer();
-        YamlPropertiesFactoryBean yaml = new YamlPropertiesFactoryBean();
-        yaml.setResources(new FileSystemResource(modulePath + File.separator +"config.yml"));
-        propertySourcesPlaceholderConfigurer.setProperties(yaml.getObject());
-        propertySourcesPlaceholderConfigurer.setIgnoreResourceNotFound(true);
-        return propertySourcesPlaceholderConfigurer;
-    }*/
-
 }

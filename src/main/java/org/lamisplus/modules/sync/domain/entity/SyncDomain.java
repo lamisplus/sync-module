@@ -1,4 +1,4 @@
 package org.lamisplus.modules.sync.domain.entity;
 
-public class SyncDomain {
+public interface SyncDomain {
 }
