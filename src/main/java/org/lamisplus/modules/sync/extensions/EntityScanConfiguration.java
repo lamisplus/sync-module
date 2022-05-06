@@ -1,4 +1,4 @@
-package org.lamisplus.modules.sync.config;
+package org.lamisplus.modules.sync.extensions;
 
 import com.foreach.across.core.annotations.ModuleConfiguration;
 import com.foreach.across.modules.hibernate.provider.HibernatePackageConfigurer;

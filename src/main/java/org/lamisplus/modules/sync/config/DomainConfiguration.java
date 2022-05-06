@@ -43,11 +43,6 @@ public class DomainConfiguration {
         return transactionManager;
     }
 
-    @Bean
-    public EntityManager entityManager(List<EntityManager> entityManagers) {
-        log.info ("entity manager BaseEntity {}", entityManagers.get (0).toString ());
-        return entityManagers.get (0);
-    }
     private final Properties hibernateProperties() {
         Properties hibernateProperties = new Properties();
         hibernateProperties.setProperty("hibernate.ddl-auto", "update");

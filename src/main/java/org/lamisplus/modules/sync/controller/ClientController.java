@@ -3,6 +3,7 @@ package org.lamisplus.modules.sync.controller;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.lamisplus.modules.sync.domain.entity.SyncQueue;
+import org.lamisplus.modules.sync.repository.SyncQueueTransactionHandler;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -20,6 +21,8 @@ import java.util.List;
 @RequestMapping("api/sync")
 public class ClientController {
     private final SyncQueueRepository syncQueueRepository;
+
+    private  final SyncQueueTransactionHandler syncTransactionHandler;
 
 
     @RequestMapping(value = "/sync-queue",
@@ -39,7 +42,7 @@ public class ClientController {
             method = RequestMethod.POST,
             produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<SyncQueue> save(@Valid @RequestBody SyncQueue syncQueue) {
-        return ResponseEntity.ok(syncQueueRepository.save(syncQueue));
+        return ResponseEntity.ok(syncTransactionHandler.save(syncQueue));
     }
 
 }

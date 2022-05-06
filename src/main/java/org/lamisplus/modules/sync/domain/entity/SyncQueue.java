@@ -2,17 +2,18 @@ package org.lamisplus.modules.sync.domain.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
-@Data
-@Entity
-@EqualsAndHashCode
+
 @Table(name = "sync_queue")
+@Entity
+@NoArgsConstructor
+@Data
 public class SyncQueue implements Serializable {
     @Id
     @Column(name = "id", updatable = false)

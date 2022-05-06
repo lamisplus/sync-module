@@ -6,27 +6,9 @@ import com.foreach.across.core.context.configurer.ComponentScanConfigurer;
 import com.foreach.across.modules.hibernate.jpa.AcrossHibernateJpaModule;
 import com.foreach.across.modules.web.AcrossWebModule;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.beans.factory.config.YamlPropertiesFactoryBean;
 import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
-import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
-import org.springframework.boot.autoconfigure.jdbc.DataSourceTransactionManagerAutoConfiguration;
-import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration;
-import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Primary;
-import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
-import org.springframework.core.io.FileSystemResource;
-import org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor;
-import org.springframework.jdbc.datasource.DriverManagerDataSource;
-import org.springframework.orm.jpa.JpaTransactionManager;
-import org.springframework.orm.jpa.JpaVendorAdapter;
-import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
-import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.scheduling.annotation.EnableScheduling;
-import org.springframework.transaction.PlatformTransactionManager;
 import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
@@ -36,9 +18,6 @@ import springfox.documentation.spi.service.contexts.SecurityContext;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
-import javax.persistence.EntityManagerFactory;
-import javax.sql.DataSource;
-import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 
@@ -63,26 +42,18 @@ public class SyncApplication extends AcrossModule {
     private String password;*/
 
 
-    public static void main(String[] args) {
-        SpringApplication.run(SyncApplication.class, args);
-    }
+//    public static void main(String[] args) {
+//        SpringApplication.run(SyncApplication.class, args);
+//    }
 
     public static final String NAME = "SyncModule";
 
     public SyncApplication() {
         super();
         addApplicationContextConfigurer(new ComponentScanConfigurer(
-                getClass().getPackage().getName() +".controller",
-                getClass().getPackage().getName() +".service",
-                getClass().getPackage().getName() +".configurer",
-                getClass().getPackage().getName() +".module",
-                getClass().getPackage().getName() +".domain",
-                getClass().getPackage().getName() +".domain.mapper",
-                getClass().getPackage().getName() +".installers",
-                getClass().getPackage().getName() +".util",
-                getClass().getPackage().getName() +".component",
-                "org.springframework.web.socket",
-                getClass().getPackage().getName() +".repository"));
+                getClass ().getPackage ().getName () + ".repository",
+                getClass ().getPackage ().getName () + ".service",
+                getClass ().getPackage ().getName () + ".controller"));
     }
 
     public String getName() {
